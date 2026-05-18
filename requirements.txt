@@ -1,8 +1,5 @@
-fastapi
-uvicorn
-databases[postgresql]
-sqlalchemy
-psycopg2-binary
-bcrypt
-python-jose[cryptography]
-slowapi
+flask==3.0.3
+flask-socketio==5.3.6
+python-socketio==5.11.2
+eventlet==0.33.3
+gunicorn==21.2.0
