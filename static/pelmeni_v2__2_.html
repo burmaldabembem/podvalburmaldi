@@ -1357,9 +1357,21 @@ async function publishAd() {
 }
 
 function renderAd() {
-  const adHtml = allAds.length
-    ? `<div class="sad-body"><div class="sad-title">${escHtml(allAds[currentAdIdx % allAds.length].title)}</div><div class="sad-text">${escHtml(allAds[currentAdIdx % allAds.length].text)}</div><div class="sad-author">— ${escHtml(allAds[currentAdIdx % allAds.length].author)}</div></div>`
-    : '<div class="sad-empty">Объявлений пока нет</div>';
+  if (!allAds.length) {
+    const emptyHtml = '<div class="sad-empty">Объявлений пока нет</div>';
+    const el = document.getElementById('sidebarAdContent');
+    if (el) el.innerHTML = emptyHtml;
+    const elR = document.getElementById('sidebarAdContentRight');
+    if (elR) elR.innerHTML = emptyHtml;
+    return;
+  }
+  const ad = allAds[currentAdIdx % allAds.length];
+  console.log('[renderAd] объявление:', JSON.stringify(ad));
+  // поддерживаем разные возможные имена полей от бэкенда
+  const adTitle  = ad.title  || ad.name        || ad.headline    || '(без заголовка)';
+  const adText   = ad.text   || ad.body        || ad.content     || ad.description || '';
+  const adAuthor = ad.author || ad.login       || ad.user        || ad.username    || '';
+  const adHtml = `<div class="sad-body"><div class="sad-title">${escHtml(adTitle)}</div><div class="sad-text">${escHtml(adText)}</div><div class="sad-author">— ${escHtml(adAuthor)}</div></div>`;
   const el = document.getElementById('sidebarAdContent');
   if (el) el.innerHTML = adHtml;
   const elR = document.getElementById('sidebarAdContentRight');
