@@ -451,7 +451,7 @@ a:hover { text-decoration: underline; }
       <div class="sidebar-menu">
         <div class="menu-header">Меню</div>
         <a class="active" id="menuNews" href="javascript:void(0)" onclick="showFeed()">Мои Новости</a>
-        <a id="buyAdLink" href="javascript:;">Купить рекламу</a>
+        <a id="buyAdLink" href="javascript:void(0)" onclick="openAdModal()">Купить рекламу</a>
         <a id="menuGames" href="javascript:void(0)" onclick="showGames()" style="color:#4a76a8;font-weight:700;">🎮 Подвал-Игры</a>
         <a id="menuMusic" href="javascript:void(0)" onclick="showMusic()" style="color:#7b3fa0;font-weight:700;">🎵 Подвал Мьюзик</a>
         <a id="menuPublics" href="javascript:void(0)" onclick="showPublics()" style="color:#2a5885;font-weight:700;display:none;">📢 Паблики</a>
@@ -881,7 +881,9 @@ async function loadAds() {
   try {
     const data = await api('GET', '/ads');
     allAds = Array.isArray(data) ? data : (data.ads || data.items || []);
+    console.log('[Объявления] Загружено:', allAds.length, allAds);
   } catch(e) {
+    console.error('[Объявления] Ошибка загрузки:', e);
     if (!Array.isArray(allAds)) allAds = [];
   }
   renderAd();
@@ -1314,11 +1316,16 @@ document.addEventListener('click', e => {
 
 // ===== ОБЪЯВЛЕНИЯ =====
 function openAdModal() {
-  document.getElementById('adTitle').value = '';
-  document.getElementById('adText').value = '';
-  document.getElementById('adError').classList.remove('show');
-  document.getElementById('modalCoins').textContent = pCoins;
   const m = document.getElementById('adModal');
+  if (!m) return;
+  const titleEl = document.getElementById('adTitle');
+  const textEl  = document.getElementById('adText');
+  const errEl   = document.getElementById('adError');
+  const mcEl    = document.getElementById('modalCoins');
+  if (titleEl) titleEl.value = '';
+  if (textEl)  textEl.value  = '';
+  if (errEl)   errEl.classList.remove('show');
+  if (mcEl)    mcEl.textContent = pCoins;
   m.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 }
@@ -1326,11 +1333,7 @@ function closeAdModal() {
   document.getElementById('adModal').style.display = 'none';
   document.body.style.overflow = '';
 }
-// Привязка через addEventListener — надёжнее inline onclick
-document.getElementById('buyAdLink').addEventListener('click', function(e) {
-  e.preventDefault();
-  openAdModal();
-});
+// Привязка через onclick уже есть прямо на элементе buyAdLink
 document.getElementById('adModal').addEventListener('click', function(e) {
   if (e.target === this) closeAdModal();
 });
