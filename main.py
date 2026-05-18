@@ -801,4 +801,3 @@ async def get_music_audio(track_id: str):
     if not row or not row["audio_data"]:
         raise HTTPException(404, "Аудио не найдено")
     return {"audio_data": row["audio_data"]}
-
