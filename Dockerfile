@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY main.txt ./main.py
 
 # Статика (HTML-фронтенд)
-COPY static/pelmeni_v2_2_.html /app/static/pelmeni_v2__2_.html
+COPY static/pelmeni_v2__2_.html /app/static/pelmeni_v2__2_.html
 
 EXPOSE 8000
 
