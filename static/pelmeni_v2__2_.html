@@ -1033,7 +1033,7 @@ a:hover { text-decoration: underline; }
           <div class="mod-card-content">
             <div class="mod-card-title" style="color:#e0aaff;">
               Треугольник Зла
-              <span class="mod-badge" style="background:linear-gradient(90deg,#7c00c8,#d946ef);">⚠ СЕКРЕТНЫЙ МОД</span>
+              <span class="mod-badge" style="background:linear-gradient(90deg,#7c00c8,#d946ef);">⚠ БУСТ +2 П-БАЛЛА</span>
             </div>
             <div class="mod-card-desc" style="color:#c084fc;">Демонический треугольник появляется на карте. Каждые 5 секунд он строит маршрут к тебе — путь подсвечивается фиолетовым. Затем он <b style="color:#f0abfc">несётся по нему с бешеной скоростью</b>. Касание = мгновенная смерть. Цикл бесконечен.</div>
           </div>
@@ -2032,7 +2032,7 @@ function startSnake() {
   if (snakeGame) snakeGame.stop();
 
   const activeMods = { evilCount: snakeMods.evilCount, badApple: snakeMods.badApple, evilGreed: snakeMods.evilGreed, antiControl: snakeMods.antiControl, wallMod: snakeMods.wallMod, evilTriangle: snakeMods.evilTriangle };
-  const bonusPerReward = activeMods.evilCount + (activeMods.badApple ? 1 : 0) + (activeMods.antiControl ? 2 : 0) + (activeMods.wallMod ? 1 : 0) + (activeMods.evilTriangle ? 3 : 0);
+  const bonusPerReward = activeMods.evilCount + (activeMods.badApple ? 1 : 0) + (activeMods.antiControl ? 2 : 0) + (activeMods.wallMod ? 1 : 0) + (activeMods.evilTriangle ? 2 : 0);
 
   snakeGame = window._snakeGame = new SnakeGame('snakeCanvas', {
     onScore: (score, apples) => {
