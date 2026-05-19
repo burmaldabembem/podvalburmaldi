@@ -273,6 +273,106 @@ a:hover { text-decoration: underline; }
 .mod-active-bar { background: linear-gradient(90deg, #4c1d95, #7c3aed); padding: 4px 14px; font-size: 11px; color: #e9d5ff; display: none; gap: 8px; align-items: center; flex-wrap: wrap; }
 .mod-active-bar.show { display: flex; }
 .mod-active-tag { background: rgba(255,255,255,0.18); border-radius: 8px; padding: 2px 8px; font-weight: 700; font-size: 10px; color: #fff; white-space: nowrap; }
+/* ===== ТАЙМЕР МОДА ===== */
+.timer-bar-wrap {
+  position: absolute;
+  top: 4px; left: 50%; transform: translateX(-50%);
+  width: 220px; height: 16px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 8px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 10;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.timer-bar-fill {
+  height: 100%;
+  border-radius: 8px;
+  transition: width 1s linear, background 0.5s;
+  background: linear-gradient(90deg, #22c55e, #86efac);
+}
+.timer-bar-fill.urgent { background: linear-gradient(90deg, #ef4444, #fca5a5); animation: timerPulse 0.5s infinite alternate; }
+@keyframes timerPulse { from { opacity:1; } to { opacity:0.55; } }
+.timer-label {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 900; color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  pointer-events: none;
+}
+
+/* Чёрный змей-преследователь */
+.black-snake-warning {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 5;
+  border-radius: 3px;
+  box-shadow: none;
+  transition: box-shadow 0.3s;
+}
+.black-snake-warning.active {
+  box-shadow: inset 0 0 0 4px rgba(0,0,0,0.9), inset 0 0 24px rgba(180,0,0,0.5);
+  animation: blackSnakePulse 0.4s infinite alternate;
+}
+@keyframes blackSnakePulse { from { box-shadow: inset 0 0 0 4px rgba(0,0,0,0.9), inset 0 0 24px rgba(180,0,0,0.5); } to { box-shadow: inset 0 0 0 6px rgba(50,0,0,1), inset 0 0 40px rgba(255,0,0,0.4); } }
+
+/* ===== КЬО ЭТОСТЬ? ===== */
+.kyo-snake-wrap {
+  position: absolute;
+  bottom: 4px; right: 4px;
+  pointer-events: none;
+  z-index: 20;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.kyo-snake-wrap.visible { display: block; opacity: 1; }
+.kyo-snake-bubble {
+  background: rgba(0,0,0,0.82);
+  border: 2px solid #22c55e;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 900;
+  color: #22c55e;
+  text-align: center;
+  white-space: nowrap;
+  margin-bottom: 2px;
+  letter-spacing: 0.04em;
+}
+.kyo-blocked-overlay {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 18;
+  border-radius: 3px;
+  display: none;
+}
+.kyo-blocked-overlay.active {
+  display: block;
+  box-shadow: inset 0 0 0 3px #22c55e88;
+}
+
+/* ===== ЭКРАН СМЕРТИ ОТ КЬО ===== */
+.kyo-death-screen {
+  position: fixed; inset: 0;
+  background: #000;
+  z-index: 99999;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier New', monospace;
+}
+.kyo-death-screen.active { display: flex; }
+.kyo-death-text {
+  font-size: 48px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.15em;
+  opacity: 0;
+  animation: kyoTypePochemu 0.4s forwards;
+}
+@keyframes kyoTypePochemu { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
 /* ===== МОБИЛЬНАЯ ОПТИМИЗАЦИЯ МОДАЛА МОДИФИКАТОРОВ ===== */
 @media (max-width: 600px) {
   /* Оверлей — прокрутка всей страницы на мобилке */
@@ -1024,6 +1124,45 @@ a:hover { text-decoration: underline; }
         </div>
       </div>
 
+      <!-- Не Успеваешь -->
+      <div class="mod-card" id="modTimerCard" onclick="toggleTimerMod()" style="cursor:pointer">
+        <div class="mod-card-row">
+          <div class="mod-icon">⏱️</div>
+          <div class="mod-card-content">
+            <div class="mod-card-title">
+              Не Успеваешь
+              <span class="mod-badge">БУСТ +2 П-БАЛЛА</span>
+            </div>
+            <div class="mod-card-desc">Запускается таймер <b>25 секунд</b>. Каждые 4 яблока спавнится <b>🍏 золотое яблоко</b>, которое сбрасывает таймер. Если таймер дойдёт до 0 — <b style="color:#dc2626">чёрный змей из 3 блоков</b> начнёт преследовать тебя пока таймер не сбросится!</div>
+            <!-- Sub: Горячая Картошка -->
+            <div class="mod-sub-option" id="hotPotatoToggle" onclick="event.stopPropagation();toggleHotPotato()">
+              <div class="mod-sub-icon">🥔</div>
+              <div class="mod-sub-text">
+                <div class="mod-sub-title">Горячая Картошка <span style="font-size:9px;background:rgba(255,80,80,0.25);border-radius:6px;padding:1px 6px;color:#ffaaaa;">SUB-МОД</span></div>
+                <div class="mod-sub-desc">Таймер <b>10 секунд</b> вместо 25. Чёрный змей убивает мгновенно при касании!</div>
+              </div>
+              <div class="mod-sub-check"><span class="mod-sub-check-inner">✓</span></div>
+            </div>
+          </div>
+          <div class="mod-check"><span class="mod-check-inner">✓</span></div>
+        </div>
+      </div>
+
+      <!-- Кьо Этость? -->
+      <div class="mod-card" id="modKyoCard" onclick="toggleKyoMod()" style="cursor:pointer">
+        <div class="mod-card-row">
+          <div class="mod-icon">🟢</div>
+          <div class="mod-card-content">
+            <div class="mod-card-title">
+              Кьо Этость?
+              <span class="mod-badge" style="background:linear-gradient(90deg,#15803d,#22c55e);">ХАОС</span>
+            </div>
+            <div class="mod-card-desc">В любой момент в <b style="color:#22c55e">углу поля</b> появляется зелёная змейка. Пока она на экране — <b>нельзя ничего делать кроме ходьбы</b> (исчезает через 2 сек). Если умрёшь пока она видна — страница станет чёрной и напечатает «Почему» 5 раз...</div>
+          </div>
+          <div class="mod-check"><span class="mod-check-inner">✓</span></div>
+        </div>
+      </div>
+
       <div style="font-size:11px;color:#9ca3af;text-align:center;padding:4px 0;">Активные модификаторы дают дополнительные П-Баллы при каждой награде!</div>
 
       <!-- 🔺 ТРЕУГОЛЬНИК ЗЛА (СЕКРЕТНЫЙ) — скрыт до разблокировки -->
@@ -1069,6 +1208,18 @@ a:hover { text-decoration: underline; }
         <div class="evil-ate-flash" id="evilAteFlash"></div>
         <div class="anticontrol-flash" id="antiControlFlash"></div>
         <div class="evil-triangle-flash" id="evilTriangleFlash"></div>
+        <!-- Timer mod UI -->
+        <div class="timer-bar-wrap" id="timerBarWrap" style="display:none">
+          <div class="timer-bar-fill" id="timerBarFill" style="width:100%"></div>
+          <div class="timer-label" id="timerLabel">25с</div>
+        </div>
+        <!-- Black snake warning border -->
+        <div class="black-snake-warning" id="blackSnakeWarning"></div>
+        <!-- Kyo snake overlay -->
+        <div class="kyo-snake-wrap" id="kyoSnakeWrap">
+          <div class="kyo-snake-bubble">КЬО ЭТОСТЬ? 👀</div>
+        </div>
+        <div class="kyo-blocked-overlay" id="kyoBlockedOverlay"></div>
         <div class="snake-overlay-msg" id="snakeOverlay">
           <h3>🐍 Змейка</h3>
           <p>5 яблок = 1 П-Балл</p>
@@ -1900,7 +2051,7 @@ function showGames() {
 }
 
 // ===== МОДИФИКАТОРЫ =====
-let snakeMods = { evilCount: 0, badApple: false, evilGreed: false, antiControl: false, wallMod: false, evilTriangle: false };
+let snakeMods = { evilCount: 0, badApple: false, evilGreed: false, antiControl: false, wallMod: false, evilTriangle: false, timerMod: false, hotPotato: false, kyoMod: false };
 
 // ===== СЕКРЕТНЫЙ СЧЁТЧИК ЛЕНТЫ =====
 let _lentaClickCount = 0;
@@ -1956,6 +2107,20 @@ function toggleEvilTriangle() {
   snakeMods.evilTriangle = !snakeMods.evilTriangle;
   renderModUI();
 }
+function toggleTimerMod() {
+  snakeMods.timerMod = !snakeMods.timerMod;
+  if (!snakeMods.timerMod) snakeMods.hotPotato = false;
+  renderModUI();
+}
+function toggleHotPotato() {
+  if (!snakeMods.timerMod) return;
+  snakeMods.hotPotato = !snakeMods.hotPotato;
+  renderModUI();
+}
+function toggleKyoMod() {
+  snakeMods.kyoMod = !snakeMods.kyoMod;
+  renderModUI();
+}
 function renderModUI() {
   // Evil card
   document.getElementById('evilCountVal').textContent = snakeMods.evilCount;
@@ -1976,8 +2141,20 @@ function renderModUI() {
   // Evil Triangle card
   const triCard = document.getElementById('modEvilTriangleCard');
   if (triCard) triCard.classList.toggle('active', snakeMods.evilTriangle);
+  // Timer mod card
+  const timerCard = document.getElementById('modTimerCard');
+  if (timerCard) timerCard.classList.toggle('active', snakeMods.timerMod);
+  const hotPotatoToggle = document.getElementById('hotPotatoToggle');
+  if (hotPotatoToggle) {
+    if (snakeMods.timerMod) { hotPotatoToggle.classList.add('show'); }
+    else { hotPotatoToggle.classList.remove('show', 'checked'); }
+    hotPotatoToggle.classList.toggle('checked', snakeMods.hotPotato);
+  }
+  // Kyo mod card
+  const kyoCard = document.getElementById('modKyoCard');
+  if (kyoCard) kyoCard.classList.toggle('active', snakeMods.kyoMod);
   // Update modifier button appearance
-  const hasAny = snakeMods.evilCount > 0 || snakeMods.badApple || snakeMods.antiControl || snakeMods.wallMod || snakeMods.evilTriangle;
+  const hasAny = snakeMods.evilCount > 0 || snakeMods.badApple || snakeMods.antiControl || snakeMods.wallMod || snakeMods.evilTriangle || snakeMods.timerMod || snakeMods.kyoMod;
   const btnMod = document.getElementById('btnModifiers');
   if (btnMod) btnMod.classList.toggle('has-mods', hasAny);
   // Update active bars
@@ -1994,6 +2171,8 @@ function getModTags() {
   if (snakeMods.antiControl) tags.push('🔄 Антиуправление');
   if (snakeMods.wallMod) tags.push('🧱 Стена');
   if (snakeMods.evilTriangle) tags.push('🔺 Треугольник Зла');
+  if (snakeMods.timerMod) tags.push(snakeMods.hotPotato ? '🥔 Горячая Картошка' : '⏱️ Не Успеваешь');
+  if (snakeMods.kyoMod) tags.push('🟢 Кьо Этость?');
   return tags;
 }
 function updateModActiveBars() {
@@ -2031,7 +2210,7 @@ function startSnake() {
   document.getElementById('snakeRewardMsg').classList.remove('show');
   if (snakeGame) snakeGame.stop();
 
-  const activeMods = { evilCount: snakeMods.evilCount, badApple: snakeMods.badApple, evilGreed: snakeMods.evilGreed, antiControl: snakeMods.antiControl, wallMod: snakeMods.wallMod, evilTriangle: snakeMods.evilTriangle };
+  const activeMods = { evilCount: snakeMods.evilCount, badApple: snakeMods.badApple, evilGreed: snakeMods.evilGreed, antiControl: snakeMods.antiControl, wallMod: snakeMods.wallMod, evilTriangle: snakeMods.evilTriangle, timerMod: snakeMods.timerMod, hotPotato: snakeMods.hotPotato, kyoMod: snakeMods.kyoMod };
   const bonusPerReward = activeMods.evilCount + (activeMods.badApple ? 1 : 0) + (activeMods.antiControl ? 2 : 0) + (activeMods.wallMod ? 1 : 0) + (activeMods.evilTriangle ? 2 : 0);
 
   snakeGame = window._snakeGame = new SnakeGame('snakeCanvas', {
@@ -2124,12 +2303,26 @@ class SnakeGame {
     if (this.mods.evilTriangle) {
       this.triangle = {
         pos: { x: Math.floor(this.COLS/2), y: Math.floor(this.ROWS/2) },
-        phase: 'idle',      // 'idle' | 'planning' | 'rushing'
-        path: [],           // planned path cells
-        pathIdx: 0,         // current position in path while rushing
+        phase: 'idle',
+        path: [],
+        pathIdx: 0,
         pulseT: 0,
       };
     }
+    // ===== ТАЙМЕР МОД =====
+    this.timerSec = this.mods.hotPotato ? 10 : 25;
+    this.timerMax = this.timerSec;
+    this._timerInterval = null;
+    this.timerExpired = false;
+    this.goldApple = null; // golden apple pos
+    this.goldAppleCount = 0; // apples since last golden
+    // Black snake pursuer
+    this.blackSnake = null; // {body:[{x,y}]}
+    this._blackSnakeInterval = null;
+    // ===== КЬО ЗМЕЙка =====
+    this.kyoVisible = false;
+    this._kyoTimer = null;
+    this._kyoHideTimer = null;
   }
   rndPos(occupied) {
     let pos;
@@ -2144,6 +2337,7 @@ class SnakeGame {
     this.evilSnakes.forEach(e => occ.push(...e.body));
     if (this.apple) occ.push(this.apple);
     if (this.badApple) occ.push(this.badApple);
+    if (this.goldApple) occ.push(this.goldApple);
     if (this.wallCells) occ.push(...this.wallCells);
     return occ;
   }
@@ -2152,6 +2346,8 @@ class SnakeGame {
     this.interval = setInterval(() => this.tick(), this.speed);
     if (this.mods.antiControl) this._scheduleAntiControl();
     if (this.mods.evilTriangle && this.triangle) this._scheduleTrianglePlanning();
+    if (this.mods.timerMod) this._startTimerMod();
+    if (this.mods.kyoMod) this._scheduleKyo();
     this.draw();
   }
   stop() {
@@ -2160,11 +2356,25 @@ class SnakeGame {
     if (this._antiTimer) clearTimeout(this._antiTimer);
     if (this._triTimer) clearTimeout(this._triTimer);
     if (this._triRushTimer) clearInterval(this._triRushTimer);
+    if (this._timerInterval) clearInterval(this._timerInterval);
+    if (this._blackSnakeInterval) clearInterval(this._blackSnakeInterval);
+    if (this._kyoTimer) clearTimeout(this._kyoTimer);
+    if (this._kyoHideTimer) clearTimeout(this._kyoHideTimer);
     this.invertControls = false;
     const flash = document.getElementById('antiControlFlash');
     if (flash) flash.classList.remove('active');
     const triFlash = document.getElementById('evilTriangleFlash');
     if (triFlash) triFlash.className = 'evil-triangle-flash';
+    // Hide timer UI
+    const timerWrap = document.getElementById('timerBarWrap');
+    if (timerWrap) timerWrap.style.display = 'none';
+    const blackWarn = document.getElementById('blackSnakeWarning');
+    if (blackWarn) blackWarn.classList.remove('active');
+    // Hide kyo
+    const kyoWrap = document.getElementById('kyoSnakeWrap');
+    if (kyoWrap) kyoWrap.classList.remove('visible');
+    const kyoBlock = document.getElementById('kyoBlockedOverlay');
+    if (kyoBlock) kyoBlock.classList.remove('active');
     document.removeEventListener('keydown', this._keyHandler);
   }
   handleKey(e) {
@@ -2178,8 +2388,173 @@ class SnakeGame {
       if (this.invertControls) nd = {x: -nd.x, y: -nd.y};
       if (!(nd.x === -this.dir.x && nd.y === -this.dir.y)) this.nextDir = nd;
       e.preventDefault();
+    } else if (this.mods.kyoMod && this.kyoVisible) {
+      // Block ALL non-movement keys during kyo
+      e.preventDefault();
     }
   }
+  // ===== ТАЙМЕР МОД =====
+  _startTimerMod() {
+    const timerWrap = document.getElementById('timerBarWrap');
+    if (timerWrap) timerWrap.style.display = 'block';
+    this._updateTimerUI();
+    this._timerInterval = setInterval(() => {
+      if (!this.running) return;
+      this.timerSec--;
+      this._updateTimerUI();
+      if (this.timerSec <= 0) {
+        this.timerExpired = true;
+        this._onTimerExpired();
+      }
+    }, 1000);
+  }
+  _updateTimerUI() {
+    const fill = document.getElementById('timerBarFill');
+    const label = document.getElementById('timerLabel');
+    if (!fill || !label) return;
+    const pct = Math.max(0, (this.timerSec / this.timerMax) * 100);
+    fill.style.width = pct + '%';
+    label.textContent = this.timerSec + 'с';
+    fill.classList.toggle('urgent', this.timerSec <= 5);
+  }
+  _onTimerExpired() {
+    // Show black snake border
+    const warn = document.getElementById('blackSnakeWarning');
+    if (warn) warn.classList.add('active');
+    // Spawn black snake far from player
+    const pHead = this.snake[0];
+    let bPos;
+    const corners = [
+      {x: this.COLS-1, y: 0},
+      {x: 0, y: this.ROWS-1},
+      {x: this.COLS-1, y: this.ROWS-1},
+      {x: 0, y: 0},
+    ];
+    // Pick farthest corner from player
+    bPos = corners.reduce((best, c) => {
+      const d = Math.abs(c.x-pHead.x)+Math.abs(c.y-pHead.y);
+      return d > best.d ? {c, d} : best;
+    }, {c: corners[0], d: 0}).c;
+    // Build black snake 3 cells long from that corner
+    const dx = bPos.x > this.COLS/2 ? -1 : 1;
+    this.blackSnake = { body: [
+      {x: bPos.x, y: bPos.y},
+      {x: bPos.x - dx, y: bPos.y},
+      {x: bPos.x - dx*2, y: bPos.y},
+    ]};
+    // Start chasing at high speed
+    const CHASE_SPEED = 80; // ms
+    this._blackSnakeInterval = setInterval(() => {
+      if (!this.running) return;
+      this._moveBlackSnake();
+    }, CHASE_SPEED);
+  }
+  _moveBlackSnake() {
+    if (!this.blackSnake) return;
+    const bHead = this.blackSnake.body[0];
+    const target = this.snake[0];
+    // Simple greedy move toward player
+    const dx = target.x - bHead.x;
+    const dy = target.y - bHead.y;
+    let nx = bHead.x, ny = bHead.y;
+    if (Math.abs(dx) >= Math.abs(dy)) {
+      nx += dx > 0 ? 1 : -1;
+    } else {
+      ny += dy > 0 ? 1 : -1;
+    }
+    // Clamp
+    nx = Math.max(0, Math.min(this.COLS-1, nx));
+    ny = Math.max(0, Math.min(this.ROWS-1, ny));
+    // Check if touches player
+    const hitPlayer = this.snake.some(s => s.x === nx && s.y === ny);
+    this.blackSnake.body.unshift({x: nx, y: ny});
+    this.blackSnake.body.pop();
+    if (hitPlayer) {
+      if (this.mods.hotPotato) {
+        // Instant kill
+        clearInterval(this._blackSnakeInterval);
+        this._blackSnakeInterval = null;
+        this.gameOver();
+      } else {
+        // Just annoy, don't kill — snake passes through
+      }
+    }
+    this.draw();
+  }
+  _resetTimer() {
+    this.timerExpired = false;
+    this.timerSec = this.mods.hotPotato ? 10 : 25;
+    this._updateTimerUI();
+    // Remove black snake
+    if (this._blackSnakeInterval) { clearInterval(this._blackSnakeInterval); this._blackSnakeInterval = null; }
+    this.blackSnake = null;
+    const warn = document.getElementById('blackSnakeWarning');
+    if (warn) warn.classList.remove('active');
+  }
+  _spawnGoldApple() {
+    const occ = this.allOccupied();
+    if (this.goldApple) occ.push(this.goldApple);
+    this.goldApple = this.rndPos(occ);
+  }
+
+  // ===== КЬО ЗМЕЙКА =====
+  _scheduleKyo() {
+    if (!this.running) return;
+    const wait = 4000 + Math.random() * 8000; // 4–12 секунд
+    this._kyoTimer = setTimeout(() => {
+      if (!this.running) return;
+      this._showKyo();
+    }, wait);
+  }
+  _showKyo() {
+    this.kyoVisible = true;
+    const wrap = document.getElementById('kyoSnakeWrap');
+    const block = document.getElementById('kyoBlockedOverlay');
+    if (wrap) wrap.classList.add('visible');
+    if (block) block.classList.add('active');
+    this._kyoHideTimer = setTimeout(() => {
+      if (!this.running) return;
+      this.kyoVisible = false;
+      if (wrap) wrap.classList.remove('visible');
+      if (block) block.classList.remove('active');
+      this._scheduleKyo();
+    }, 2000);
+  }
+  _triggerKyoDeath() {
+    // Страница чернеет, печатается "Почему" 5 раз
+    const screen = document.getElementById('kyoDeathScreen');
+    if (!screen) { this.gameOver(); return; }
+    screen.classList.add('active');
+    screen.innerHTML = '';
+    const words = ['Почему', 'Почему', 'Почему', 'Почему', 'Почему'];
+    let i = 0;
+    const addWord = () => {
+      if (i >= words.length) {
+        // After showing all — fade out and show game over
+        setTimeout(() => {
+          screen.style.transition = 'opacity 1s';
+          screen.style.opacity = '0';
+          setTimeout(() => {
+            screen.classList.remove('active');
+            screen.style.opacity = '';
+            screen.style.transition = '';
+            this.cb.onGameOver(this.score, this.apples);
+          }, 1000);
+        }, 1200);
+        return;
+      }
+      const el = document.createElement('div');
+      el.className = 'kyo-death-text';
+      el.textContent = words[i];
+      el.style.animationDelay = '0s';
+      el.style.marginBottom = '12px';
+      screen.appendChild(el);
+      i++;
+      setTimeout(addWord, 500);
+    };
+    setTimeout(addWord, 300);
+  }
+
   _scheduleAntiControl() {
     if (!this.running) return;
     const waitMs = 2000 + Math.random() * 14000; // 2–16 сек до инверсии
@@ -2303,7 +2678,7 @@ class SnakeGame {
         this.triangle.phase = 'idle';
         const triFlash2 = document.getElementById('evilTriangleFlash');
         if (triFlash2) triFlash2.className = 'evil-triangle-flash';
-        this.gameOver();
+        this._handleDeath();
         return;
       }
       this.draw();
@@ -2427,23 +2802,32 @@ class SnakeGame {
     this.dir = this.nextDir;
     const head = {x: this.snake[0].x + this.dir.x, y: this.snake[0].y + this.dir.y};
     // Стена
-    if (head.x<0||head.x>=this.COLS||head.y<0||head.y>=this.ROWS) { this.gameOver(); return; }
+    if (head.x<0||head.x>=this.COLS||head.y<0||head.y>=this.ROWS) { this._handleDeath(); return; }
     // Сама себя
-    if (this.snake.some(s=>s.x===head.x&&s.y===head.y)) { this.gameOver(); return; }
+    if (this.snake.some(s=>s.x===head.x&&s.y===head.y)) { this._handleDeath(); return; }
     // Стены-препятствия (мод)
-    if (this.wallCells.some(w=>w.x===head.x&&w.y===head.y)) { this.gameOver(); return; }
+    if (this.wallCells.some(w=>w.x===head.x&&w.y===head.y)) { this._handleDeath(); return; }
     // Злые змейки — касание тела
     for (const evil of this.evilSnakes) {
-      if (evil.body.some(s=>s.x===head.x&&s.y===head.y)) { this.gameOver(); return; }
+      if (evil.body.some(s=>s.x===head.x&&s.y===head.y)) { this._handleDeath(); return; }
     }
     // Треугольник Зла — касание любой части тела
     if (this.triangle && this.snake.some(s => s.x===this.triangle.pos.x && s.y===this.triangle.pos.y)) {
-      this.gameOver(); return;
+      this._handleDeath(); return;
     }
     this.snake.unshift(head);
     // Плохое яблоко — смерть
     if (this.badApple && head.x===this.badApple.x && head.y===this.badApple.y) {
-      this.gameOver(); return;
+      this._handleDeath(); return;
+    }
+    // Золотое яблоко (таймер мод)
+    if (this.mods.timerMod && this.goldApple && head.x===this.goldApple.x && head.y===this.goldApple.y) {
+      this.goldApple = null;
+      this._resetTimer();
+      this.snake.pop(); // не растём от золотого
+      this.cb.onScore(this.score, this.apples);
+      this.draw();
+      return;
     }
     // Обычное яблоко
     if (head.x===this.apple.x && head.y===this.apple.y) {
@@ -2459,6 +2843,13 @@ class SnakeGame {
       }
       // Спавним стену (мод)
       if (this.mods.wallMod) this._spawnWall();
+      // Таймер мод: каждые 4 яблока — золотое
+      if (this.mods.timerMod) {
+        this.goldAppleCount++;
+        if (this.goldAppleCount % 4 === 0) {
+          this._spawnGoldApple();
+        }
+      }
       // Награда каждые 5 яблок
       if (this.apples % this.applesForCoin === 0) this.cb.onReward();
       // Ускорение
@@ -2474,6 +2865,14 @@ class SnakeGame {
     this.evilSnakes.forEach(e => this.moveEvil(e));
     this.cb.onScore(this.score, this.apples);
     this.draw();
+  }
+  _handleDeath() {
+    if (this.mods.kyoMod && this.kyoVisible) {
+      this.stop();
+      this._triggerKyoDeath();
+    } else {
+      this.gameOver();
+    }
   }
   gameOver() {
     this.stop();
@@ -2516,6 +2915,76 @@ class SnakeGame {
     ctx.fillStyle = '#e74c3c';
     ctx.beginPath(); ctx.arc(ax+C/2, ay+C/2, C/2-2, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = '#27ae60'; ctx.fillRect(ax+C/2-1, ay+1, 3, 5);
+
+    // === ЗОЛОТОЕ ЯБЛОКО (таймер мод) ===
+    if (this.mods.timerMod && this.goldApple) {
+      const gx = this.goldApple.x*C, gy = this.goldApple.y*C;
+      const t2 = Date.now();
+      ctx.save();
+      ctx.shadowBlur = 12 + 6*Math.sin(t2*0.006);
+      ctx.shadowColor = '#ffd700';
+      const goldGrad = ctx.createRadialGradient(gx+C/2,gy+C/2,1,gx+C/2,gy+C/2,C/2-1);
+      goldGrad.addColorStop(0,'#fff176');
+      goldGrad.addColorStop(0.6,'#ffd700');
+      goldGrad.addColorStop(1,'#b8860b');
+      ctx.fillStyle = goldGrad;
+      ctx.beginPath(); ctx.arc(gx+C/2, gy+C/2, C/2-2, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#27ae60'; ctx.fillRect(gx+C/2-1, gy+1, 3, 5);
+      // Star sparkle
+      ctx.fillStyle = 'rgba(255,255,200,0.9)';
+      ctx.font = 'bold 8px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('⭐', gx+C/2, gy+C/2+1);
+      ctx.restore();
+    }
+
+    // === ЧЁРНЫЙ ЗМЕЙ (таймер мод) ===
+    if (this.blackSnake) {
+      this.blackSnake.body.forEach((seg, i) => {
+        const sx = seg.x*C, sy = seg.y*C;
+        ctx.save();
+        ctx.shadowBlur = i===0 ? 16 : 6;
+        ctx.shadowColor = '#ff0000';
+        const bGrad = ctx.createLinearGradient(sx,sy,sx+C,sy+C);
+        if (i===0) { bGrad.addColorStop(0,'#1a0000'); bGrad.addColorStop(1,'#000'); }
+        else       { bGrad.addColorStop(0,'#0a0000'); bGrad.addColorStop(1,'#000'); }
+        ctx.fillStyle = bGrad;
+        ctx.fillRect(sx+1,sy+1,C-2,C-2);
+        if (i===0) {
+          // Red eyes
+          ctx.fillStyle = '#ff2222';
+          ctx.beginPath(); ctx.arc(sx+C*0.35,sy+C*0.35,2,0,Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.arc(sx+C*0.65,sy+C*0.35,2,0,Math.PI*2); ctx.fill();
+        }
+        ctx.restore();
+      });
+    }
+
+    // === КЬО ЗМЕЙКА (рисуется на канвасе в углу) ===
+    if (this.mods.kyoMod && this.kyoVisible) {
+      const kyoBody = [
+        {x:this.COLS-1,y:this.ROWS-1},
+        {x:this.COLS-2,y:this.ROWS-1},
+        {x:this.COLS-3,y:this.ROWS-1},
+      ];
+      const t3 = Date.now();
+      kyoBody.forEach((seg,i) => {
+        const sx=seg.x*C,sy=seg.y*C;
+        ctx.save();
+        ctx.globalAlpha = 0.85;
+        ctx.shadowBlur = i===0?14:6; ctx.shadowColor='#22c55e';
+        const kg = ctx.createLinearGradient(sx,sy,sx+C,sy+C);
+        kg.addColorStop(0,i===0?'#4ade80':'#16a34a');
+        kg.addColorStop(1,i===0?'#15803d':'#052e16');
+        ctx.fillStyle=kg;
+        ctx.fillRect(sx+1,sy+1,C-2,C-2);
+        if(i===0){
+          ctx.fillStyle='#fff';
+          ctx.beginPath();ctx.arc(sx+C*0.35,sy+C*0.35,2,0,Math.PI*2);ctx.fill();
+          ctx.beginPath();ctx.arc(sx+C*0.65,sy+C*0.35,2,0,Math.PI*2);ctx.fill();
+        }
+        ctx.restore();
+      });
+    }
 
     // === ЗЛЫЕ ЗМЕЙКИ ===
     this.evilSnakes.forEach((evil, ei) => {
@@ -3440,6 +3909,9 @@ class MinesweeperGame {
   } catch(e) {}
 })();
 </script>
+<!-- КЬО ЭКРАН СМЕРТИ -->
+<div class="kyo-death-screen" id="kyoDeathScreen"></div>
+
 <!-- СЕКРЕТНЫЙ ТОСТ -->
 <div class="secret-toast" id="secretToast">🔺 Секретный модификатор разблокирован!</div>
 
