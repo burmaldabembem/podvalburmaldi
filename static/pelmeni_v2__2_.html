@@ -2302,7 +2302,7 @@ class SnakeGame {
     this._triRushTimer = null;
     if (this.mods.evilTriangle) {
       this.triangle = {
-        pos: { x: Math.floor(this.COLS/2), y: Math.floor(this.ROWS/2) },
+        pos: { x: Math.floor(this.COLS/2), y: this.ROWS - 1 },
         phase: 'idle',
         path: [],
         pathIdx: 0,
