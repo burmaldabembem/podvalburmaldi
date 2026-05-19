@@ -2205,7 +2205,7 @@ class SnakeGame {
     this._triTimer = setTimeout(() => {
       if (!this.running || !this.triangle) return;
       this._trianglePlanPath();
-    }, 5000);
+    }, 2500);
   }
   _triangleBFS(from, to) {
     // BFS from triangle pos to target, returns array of cells [{x,y}]
@@ -2270,11 +2270,11 @@ class SnakeGame {
     // Show path planning flash
     const triFlash = document.getElementById('evilTriangleFlash');
     if (triFlash) triFlash.className = 'evil-triangle-flash planning';
-    // After 5 seconds of showing — RUSH!
+    // After 2 seconds of showing — RUSH!
     this._triTimer = setTimeout(() => {
       if (!this.running || !this.triangle) return;
       this._triangleStartRush();
-    }, 5000);
+    }, 2000);
   }
   _triangleStartRush() {
     if (!this.running || !this.triangle) return;
