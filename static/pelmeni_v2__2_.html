@@ -851,7 +851,7 @@ a:hover { text-decoration: underline; }
               Злой Двойник
               <span class="mod-badge">БУСТ +1 П-БАЛЛ</span>
             </div>
-            <div class="mod-card-desc">Злая змейка умно преследует тебя по кратчайшему пути — когда ты ешь яблоко, она тоже растёт! Касание = смерть. Можно добавить до 2 двойников.</div>
+            <div class="mod-card-desc">Злая змейка умно преследует тебя по кратчайшему пути — когда ты ешь яблоко, она тоже растёт! Касание = смерть. Можно добавить до 4 двойников.</div>
             <div class="mod-count-wrap">
               <span class="mod-count-label">👿 Количество двойников:</span>
               <button class="mod-count-btn" id="evilBtnMinus" onclick="changeEvilCount(-1)">−</button>
@@ -1791,7 +1791,7 @@ function closeModifiersAndPlay() {
   openSnake();
 }
 function changeEvilCount(delta) {
-  snakeMods.evilCount = Math.max(0, Math.min(2, snakeMods.evilCount + delta));
+  snakeMods.evilCount = Math.max(0, Math.min(4, snakeMods.evilCount + delta));
   if (snakeMods.evilCount === 0) snakeMods.evilGreed = false;
   renderModUI();
 }
@@ -1816,7 +1816,7 @@ function renderModUI() {
   // Evil card
   document.getElementById('evilCountVal').textContent = snakeMods.evilCount;
   document.getElementById('evilBtnMinus').disabled = snakeMods.evilCount === 0;
-  document.getElementById('evilBtnPlus').disabled = snakeMods.evilCount === 2;
+  document.getElementById('evilBtnPlus').disabled = snakeMods.evilCount === 4;
   document.getElementById('modEvilCard').classList.toggle('active', snakeMods.evilCount > 0);
   // Evil greed sub-option
   const greedToggle = document.getElementById('evilGreedToggle');
@@ -1840,6 +1840,8 @@ function getModTags() {
   const tags = [];
   if (snakeMods.evilCount === 1) tags.push('👿 Злой Двойник ×1');
   if (snakeMods.evilCount === 2) tags.push('👿 Злой Двойник ×2');
+  if (snakeMods.evilCount === 3) tags.push('👿 Злой Двойник ×3');
+  if (snakeMods.evilCount === 4) tags.push('👿 Злой Двойник ×4');
   if (snakeMods.evilGreed) tags.push('🍏 Жадность Зла');
   if (snakeMods.badApple) tags.push('🍎 Плохое Яблоко');
   if (snakeMods.antiControl) tags.push('🔄 Антиуправление');
@@ -1961,6 +1963,8 @@ class SnakeGame {
     const spawnCorners = [
       [{x:this.COLS-1,y:0},{x:this.COLS-2,y:0},{x:this.COLS-3,y:0}],
       [{x:0,y:this.ROWS-1},{x:1,y:this.ROWS-1},{x:2,y:this.ROWS-1}],
+      [{x:0,y:0},{x:1,y:0},{x:2,y:0}],
+      [{x:this.COLS-1,y:this.ROWS-1},{x:this.COLS-2,y:this.ROWS-1},{x:this.COLS-3,y:this.ROWS-1}],
     ];
     for (let i = 0; i < this.mods.evilCount; i++) {
       this.evilSnakes.push({ body: spawnCorners[i].map(p=>({...p})), growNext: false });
