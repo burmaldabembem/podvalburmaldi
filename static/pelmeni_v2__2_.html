@@ -2297,8 +2297,8 @@ class SnakeGame {
       const next = path[this.triangle.pathIdx];
       this.triangle.pos = { x: next.x, y: next.y };
       this.triangle.pathIdx++;
-      // Check collision with snake head
-      if (this.triangle.pos.x === this.snake[0].x && this.triangle.pos.y === this.snake[0].y) {
+      // Check collision with entire snake body
+      if (this.snake.some(s => s.x === this.triangle.pos.x && s.y === this.triangle.pos.y)) {
         clearInterval(this._triRushTimer);
         this.triangle.phase = 'idle';
         const triFlash2 = document.getElementById('evilTriangleFlash');
@@ -2436,8 +2436,8 @@ class SnakeGame {
     for (const evil of this.evilSnakes) {
       if (evil.body.some(s=>s.x===head.x&&s.y===head.y)) { this.gameOver(); return; }
     }
-    // Треугольник Зла — касание во время рывка
-    if (this.triangle && (this.triangle.pos.x===head.x && this.triangle.pos.y===head.y)) {
+    // Треугольник Зла — касание любой части тела
+    if (this.triangle && this.snake.some(s => s.x===this.triangle.pos.x && s.y===this.triangle.pos.y)) {
       this.gameOver(); return;
     }
     this.snake.unshift(head);
