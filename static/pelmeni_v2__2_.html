@@ -596,6 +596,55 @@ a:hover { text-decoration: underline; }
 .public-modal-footer { padding: 12px 20px 16px; display: flex; gap: 8px; border-top: 1px solid #f0f0f0; }
 .btn-create-public-confirm { background: linear-gradient(180deg, #5b8fc9, #4a76a8); border: 1px solid #2a5080; border-radius: 4px; color: #fff; font-size: 13px; font-weight: 700; padding: 9px 20px; cursor: pointer; text-shadow: 0 1px 2px rgba(0,0,0,0.2); box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); transition: filter 0.15s; flex: 1; }
 .btn-create-public-confirm:hover { filter: brightness(1.08); }
+
+/* ===== САПЁР ===== */
+.ms-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 600; display: none; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 10px 0; }
+.ms-modal-overlay.open { display: flex; }
+.ms-modal { background: #fff; border-radius: 6px; width: 510px; max-width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.35); overflow: hidden; margin: auto; }
+.ms-modal-header { background: linear-gradient(180deg, #5b8fc9, #4a76a8); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+.ms-modal-title { font-size: 14px; font-weight: 700; color: #fff; }
+.ms-modal-close { color: rgba(255,255,255,0.7); font-size: 20px; cursor: pointer; background: none; border: none; line-height: 1; }
+.ms-modal-close:hover { color: #fff; }
+.ms-info-bar { background: #f5f8fc; border-bottom: 1px solid #d3d9e0; padding: 7px 14px; display: flex; align-items: center; gap: 14px; font-size: 12px; flex-wrap: wrap; }
+.ms-stat { color: #555; }
+.ms-stat b { color: #2a5885; font-size: 13px; }
+.ms-stat-coins b { color: #b8820a; }
+.ms-reward-msg { background: linear-gradient(90deg, #d4a017, #c8920a); color: #fff; text-align: center; padding: 6px 14px; font-size: 12px; font-weight: 700; display: none; }
+.ms-reward-msg.show { display: block; animation: fadeIn 0.3s ease; }
+.ms-board-wrap { background: #1a1a2e; padding: 10px; display: flex; justify-content: center; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.ms-board-container { position: relative; display: inline-block; }
+.ms-board { display: flex; flex-direction: column; gap: 2px; user-select: none; -webkit-user-select: none; }
+.ms-row { display: flex; gap: 2px; }
+.ms-cell { width: 28px; height: 28px; border-radius: 3px; background: #3a6090; border: 1px solid #4a76a8; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.08s; flex-shrink: 0; touch-action: manipulation; -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+.ms-cell:hover:not(.ms-revealed):not(.ms-flagged) { background: #5b8fc9; }
+.ms-cell:active:not(.ms-revealed) { transform: scale(0.88); }
+.ms-cell.ms-revealed { background: #e8f0fc; border-color: #b0c4de; cursor: default; font-size: 13px; }
+.ms-cell.ms-mine { background: #fdecea !important; border-color: #e57373 !important; }
+.ms-cell.ms-mine-hit { background: #e57373 !important; border-color: #c0392b !important; }
+.ms-cell.ms-flagged { background: #fff8e8; border-color: #e8c84a; font-size: 14px; }
+.ms-overlay-msg { position: absolute; inset: 0; background: rgba(0,0,0,0.78); display: none; flex-direction: column; align-items: center; justify-content: center; color: #fff; gap: 12px; text-align: center; padding: 20px; border-radius: 3px; }
+.ms-overlay-msg.open { display: flex; }
+.ms-overlay-msg h3 { font-size: 20px; font-weight: 900; text-shadow: 0 2px 6px rgba(0,0,0,0.5); }
+.ms-overlay-msg p { font-size: 13px; color: rgba(255,255,255,0.85); max-width: 220px; }
+.ms-controls { padding: 8px 14px 10px; background: #f9fafb; border-top: 1px solid #d3d9e0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ms-flag-btn { background: #f5f8fc; border: 2px solid #4a76a8; border-radius: 4px; color: #4a76a8; font-size: 11px; font-weight: 700; padding: 6px 12px; cursor: pointer; transition: background 0.15s, border-color 0.15s; white-space: nowrap; }
+.ms-flag-btn.active { background: #fff8e8; border-color: #d4a017; color: #7a5000; box-shadow: 0 0 6px rgba(212,160,23,0.35); }
+.ms-flag-btn:hover:not(.active) { background: #e0ecfb; }
+.ms-new-btn { background: linear-gradient(180deg, #5b8fc9, #4a76a8); border: 1px solid #2a5080; border-radius: 3px; color: #fff; font-size: 11px; font-weight: 700; padding: 6px 14px; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,0.18); transition: filter 0.15s; }
+.ms-new-btn:hover { filter: brightness(1.1); }
+.ms-hint { font-size: 10px; color: #aaa; margin-left: auto; white-space: nowrap; }
+@media (max-width: 600px) {
+  .ms-modal { width: 100%; border-radius: 0; display: flex; flex-direction: column; }
+  .ms-modal-overlay { padding: 0; align-items: flex-start; }
+  .ms-cell { width: 22px; height: 22px; font-size: 10px; border-radius: 2px; }
+  .ms-cell.ms-revealed { font-size: 11px; }
+  .ms-cell.ms-flagged { font-size: 12px; }
+  .ms-flag-btn { font-size: 12px; padding: 9px 16px; min-height: 44px; border-radius: 6px; }
+  .ms-new-btn { font-size: 12px; padding: 9px 16px; min-height: 44px; border-radius: 6px; }
+  .ms-hint { display: none; }
+  .ms-controls { padding: 8px 12px 16px; gap: 10px; padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)); }
+  .ms-board-wrap { padding: 8px; }
+}
 </style>
 </head>
 <body>
@@ -729,6 +778,18 @@ a:hover { text-decoration: underline; }
           </div>
         </div>
       </div>
+        <!-- САПЁР -->
+        <div class="game-card">
+          <div class="game-card-header">
+            <span class="game-card-title">💣 Сапёр</span>
+            <span class="game-card-badge">+20 П-Баллов</span>
+          </div>
+          <div class="game-card-body">
+            <div class="game-desc">Классический сапёр на поле 15×15! Открывай клетки, не задев мины. Обезвредь все мины — получи награду. На телефоне — удерживай клетку чтобы поставить флаг.</div>
+            <div class="game-reward">🏆 Награда: <b>20 П-Баллов</b> за победу (поле 15×15, 35 мин)</div>
+            <button class="btn-play" onclick="openMinesweeper()">▶ Играть</button>
+          </div>
+        </div>
       <!-- ПОДВАЛ МЬЮЗИК -->
       <div id="musicList" class="music-section" style="display:none;">
         <div class="music-header-bar">
@@ -831,6 +892,37 @@ a:hover { text-decoration: underline; }
     <div class="music-modal-footer">
       <button class="btn-publish-confirm" id="btnPublishTrack" onclick="publishTrack()">Опубликовать</button>
       <button class="btn-cancel" onclick="closeMusicModal()">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<!-- САПЁР МОДАЛКА -->
+<div class="ms-modal-overlay" id="minesweeperModal">
+  <div class="ms-modal">
+    <div class="ms-modal-header">
+      <span class="ms-modal-title">💣 Сапёр</span>
+      <button class="ms-modal-close" onclick="closeMinesweeper()">×</button>
+    </div>
+    <div class="ms-info-bar">
+      <div class="ms-stat">💣 Мин: <b id="minesweeperMinesLeft">35</b></div>
+      <div class="ms-stat">⏱ Время: <b id="minesweeperTimer">0с</b></div>
+      <div class="ms-stat ms-stat-coins">П-Баллы: <b id="minesweeperPcoins">0</b></div>
+    </div>
+    <div class="ms-reward-msg" id="minesweeperRewardMsg">+20 П-Баллов получено! 🏆</div>
+    <div class="ms-board-wrap">
+      <div class="ms-board-container">
+        <div class="ms-board" id="minesweeperBoard"></div>
+        <div class="ms-overlay-msg open" id="minesweeperOverlay">
+          <h3>💣 Сапёр</h3>
+          <p>15×15 · 35 мин<br>Победа = +20 П-Баллов</p>
+          <button class="btn-snake-start" onclick="startMinesweeper()">Начать игру</button>
+        </div>
+      </div>
+    </div>
+    <div class="ms-controls">
+      <button class="ms-flag-btn" id="minesweeperFlagBtn" onclick="toggleMinesweeperFlagMode()">🚩 Режим флага</button>
+      <button class="ms-new-btn" onclick="resetMinesweeper()">🔄 Новая игра</button>
+      <span class="ms-hint">ПКМ / удержание = 🚩</span>
     </div>
   </div>
 </div>
@@ -2716,6 +2808,318 @@ function renderMusicTracks(tracks) {
       </div>
     </div>
   `).join('');
+}
+
+// ===== САПЁР =====
+const MS_SIZE = 15;
+const MS_MINES = 35;
+const MS_REWARD = 20;
+
+let _msGame = null;
+let _msFlagMode = false;
+
+function openMinesweeper() {
+  document.getElementById('minesweeperModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('minesweeperPcoins').textContent = pCoins;
+  _buildMsBoard(); // render empty board behind overlay
+}
+
+function closeMinesweeper() {
+  document.getElementById('minesweeperModal').classList.remove('open');
+  document.body.style.overflow = '';
+  if (_msGame) { _msGame.stop(); _msGame = null; }
+  _msFlagMode = false;
+  _updateFlagBtn();
+}
+
+function startMinesweeper() {
+  document.getElementById('minesweeperOverlay').classList.remove('open');
+  _msGame = new MinesweeperGame();
+  _msGame.render();
+}
+
+function resetMinesweeper() {
+  if (_msGame) { _msGame.stop(); _msGame = null; }
+  _msFlagMode = false;
+  _updateFlagBtn();
+  document.getElementById('minesweeperTimer').textContent = '0с';
+  document.getElementById('minesweeperMinesLeft').textContent = MS_MINES;
+  document.getElementById('minesweeperRewardMsg').classList.remove('show');
+  const ov = document.getElementById('minesweeperOverlay');
+  ov.innerHTML = `
+    <h3>💣 Сапёр</h3>
+    <p>15×15 · 35 мин<br>Победа = +20 П-Баллов</p>
+    <button class="btn-snake-start" onclick="startMinesweeper()">Начать игру</button>
+  `;
+  ov.classList.add('open');
+  _buildMsBoard();
+}
+
+function toggleMinesweeperFlagMode() {
+  _msFlagMode = !_msFlagMode;
+  _updateFlagBtn();
+}
+
+function _updateFlagBtn() {
+  const btn = document.getElementById('minesweeperFlagBtn');
+  if (!btn) return;
+  btn.classList.toggle('active', _msFlagMode);
+  btn.textContent = _msFlagMode ? '🚩 Флаг: ВКЛ' : '🚩 Режим флага';
+}
+
+function _buildMsBoard() {
+  // Renders a blank locked board (visual only, before game starts)
+  const container = document.getElementById('minesweeperBoard');
+  if (!container) return;
+  container.innerHTML = '';
+  for (let y = 0; y < MS_SIZE; y++) {
+    const row = document.createElement('div');
+    row.className = 'ms-row';
+    for (let x = 0; x < MS_SIZE; x++) {
+      const div = document.createElement('div');
+      div.className = 'ms-cell';
+      row.appendChild(div);
+    }
+    container.appendChild(row);
+  }
+}
+
+class MinesweeperGame {
+  constructor() {
+    this.size = MS_SIZE;
+    this.totalMines = MS_MINES;
+    this.board = Array.from({length: this.size}, () =>
+      Array.from({length: this.size}, () => ({ mine: false, revealed: false, flagged: false, count: 0 }))
+    );
+    this.gameOver = false;
+    this.won = false;
+    this.firstClick = true;
+    this.minesLeft = this.totalMines;
+    this.startTime = null;
+    this._timerInterval = null;
+    this._hitCell = null;
+  }
+
+  placeMines(safeX, safeY) {
+    let placed = 0;
+    while (placed < this.totalMines) {
+      const x = Math.floor(Math.random() * this.size);
+      const y = Math.floor(Math.random() * this.size);
+      if (Math.abs(x - safeX) <= 1 && Math.abs(y - safeY) <= 1) continue;
+      if (this.board[y][x].mine) continue;
+      this.board[y][x].mine = true;
+      placed++;
+    }
+    for (let y = 0; y < this.size; y++) {
+      for (let x = 0; x < this.size; x++) {
+        if (this.board[y][x].mine) continue;
+        let cnt = 0;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+          const ny = y + dy, nx = x + dx;
+          if (ny >= 0 && ny < this.size && nx >= 0 && nx < this.size && this.board[ny][nx].mine) cnt++;
+        }
+        this.board[y][x].count = cnt;
+      }
+    }
+  }
+
+  reveal(x, y) {
+    if (this.gameOver) return;
+    const cell = this.board[y][x];
+    if (cell.flagged || cell.revealed) return;
+
+    if (this.firstClick) {
+      this.firstClick = false;
+      this.placeMines(x, y);
+      this.startTime = Date.now();
+      this._startTimer();
+    }
+
+    if (cell.mine) {
+      this.gameOver = true;
+      this._hitCell = {x, y};
+      this._revealMines();
+      this.render();
+      this._stopTimer();
+      this._showGameOver();
+      return;
+    }
+
+    this._flood(x, y);
+    this.render();
+
+    if (this._checkWin()) {
+      this.won = true;
+      this.gameOver = true;
+      this._stopTimer();
+      this._flagAllMines();
+      this.render();
+      this._showWin();
+    }
+  }
+
+  flag(x, y) {
+    if (this.gameOver || this.firstClick) return;
+    const cell = this.board[y][x];
+    if (cell.revealed) return;
+    cell.flagged = !cell.flagged;
+    this.minesLeft += cell.flagged ? -1 : 1;
+    document.getElementById('minesweeperMinesLeft').textContent = this.minesLeft;
+    this.render();
+  }
+
+  _flood(x, y) {
+    const stack = [{x, y}];
+    while (stack.length) {
+      const {x: cx, y: cy} = stack.pop();
+      if (cy < 0 || cy >= this.size || cx < 0 || cx >= this.size) continue;
+      const c = this.board[cy][cx];
+      if (c.revealed || c.flagged || c.mine) continue;
+      c.revealed = true;
+      if (c.count === 0) {
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+          if (dx || dy) stack.push({x: cx + dx, y: cy + dy});
+        }
+      }
+    }
+  }
+
+  _revealMines() {
+    for (let y = 0; y < this.size; y++)
+      for (let x = 0; x < this.size; x++)
+        if (this.board[y][x].mine) this.board[y][x].revealed = true;
+  }
+
+  _flagAllMines() {
+    for (let y = 0; y < this.size; y++)
+      for (let x = 0; x < this.size; x++)
+        if (this.board[y][x].mine) { this.board[y][x].flagged = true; this.board[y][x].revealed = false; }
+    this.minesLeft = 0;
+    document.getElementById('minesweeperMinesLeft').textContent = 0;
+  }
+
+  _checkWin() {
+    for (let y = 0; y < this.size; y++)
+      for (let x = 0; x < this.size; x++)
+        if (!this.board[y][x].mine && !this.board[y][x].revealed) return false;
+    return true;
+  }
+
+  _startTimer() {
+    this._timerInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+      const el = document.getElementById('minesweeperTimer');
+      if (el) el.textContent = elapsed + 'с';
+    }, 500);
+  }
+
+  _stopTimer() { if (this._timerInterval) { clearInterval(this._timerInterval); this._timerInterval = null; } }
+
+  stop() { this._stopTimer(); }
+
+  _showGameOver() {
+    const ov = document.getElementById('minesweeperOverlay');
+    ov.innerHTML = `
+      <h3>💥 Мина!</h3>
+      <p>Ты подорвался...<br>Попробуй ещё раз!</p>
+      <button class="btn-snake-start" onclick="startMinesweeper()">Новая игра</button>
+    `;
+    ov.classList.add('open');
+  }
+
+  async _showWin() {
+    const ov = document.getElementById('minesweeperOverlay');
+    ov.innerHTML = `
+      <h3>🏆 Победа!</h3>
+      <p>Все мины обезврежены!</p>
+      <p style="font-size:12px;color:#f0c030;">Начисляем +${MS_REWARD} П-Баллов...</p>
+    `;
+    ov.classList.add('open');
+    try {
+      const calls = Array.from({length: MS_REWARD}, () => api('POST', '/pcoins/earn', {}));
+      const results = await Promise.all(calls);
+      pCoins = results[results.length - 1].pcoins;
+      updatePCoins();
+      document.getElementById('minesweeperPcoins').textContent = pCoins;
+      ov.innerHTML = `
+        <h3>🏆 Победа!</h3>
+        <p>+${MS_REWARD} П-Баллов получено! 🎉</p>
+        <button class="btn-snake-start" onclick="startMinesweeper()">Сыграть ещё</button>
+      `;
+    } catch(e) {
+      console.error('Ошибка начисления:', e);
+      ov.innerHTML = `
+        <h3>🏆 Победа!</h3>
+        <p>Ошибка начисления баллов 😢</p>
+        <button class="btn-snake-start" onclick="startMinesweeper()">Новая игра</button>
+      `;
+    }
+  }
+
+  render() {
+    const container = document.getElementById('minesweeperBoard');
+    if (!container) return;
+    document.getElementById('minesweeperPcoins').textContent = pCoins;
+    const colors = ['', '#1565c0', '#2e7d32', '#c62828', '#4a148c', '#880e4f', '#00695c', '#111', '#555'];
+    container.innerHTML = '';
+
+    for (let y = 0; y < this.size; y++) {
+      const row = document.createElement('div');
+      row.className = 'ms-row';
+      for (let x = 0; x < this.size; x++) {
+        const cell = this.board[y][x];
+        const div = document.createElement('div');
+        div.className = 'ms-cell';
+
+        if (cell.revealed) {
+          div.classList.add(cell.mine ? (this._hitCell && this._hitCell.x === x && this._hitCell.y === y ? 'ms-mine-hit' : 'ms-mine') : 'ms-revealed');
+          if (cell.mine) div.textContent = '💣';
+          else if (cell.count > 0) { div.textContent = cell.count; div.style.color = colors[cell.count] || '#000'; }
+        } else if (cell.flagged) {
+          div.classList.add('ms-flagged');
+          div.textContent = '🚩';
+        }
+
+        if (!this.gameOver) {
+          let lpTimer = null, lpFired = false;
+
+          div.addEventListener('click', (e) => {
+            if (_msFlagMode) this.flag(x, y);
+            else this.reveal(x, y);
+          });
+
+          div.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            this.flag(x, y);
+          });
+
+          div.addEventListener('touchstart', () => {
+            lpFired = false;
+            lpTimer = setTimeout(() => {
+              lpFired = true;
+              this.flag(x, y);
+            }, 480);
+          }, {passive: true});
+
+          div.addEventListener('touchend', (e) => {
+            if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; }
+            if (lpFired) { e.preventDefault(); return; }
+            e.preventDefault();
+            if (_msFlagMode) this.flag(x, y);
+            else this.reveal(x, y);
+          });
+
+          div.addEventListener('touchmove', () => {
+            if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; }
+          }, {passive: true});
+        }
+
+        row.appendChild(div);
+      }
+      container.appendChild(row);
+    }
+  }
 }
 
 // ===== АВТОВОССТАНОВЛЕНИЕ СЕССИИ =====
