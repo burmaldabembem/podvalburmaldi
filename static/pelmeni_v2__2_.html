@@ -275,6 +275,19 @@ a:hover { text-decoration: underline; }
 .mod-active-tag { background: rgba(255,255,255,0.18); border-radius: 8px; padding: 2px 8px; font-weight: 700; font-size: 10px; color: #fff; white-space: nowrap; }
 @media (max-width: 700px) { .mod-modal { width: calc(100% - 20px); margin: 10px; } }
 .snake-canvas-container { position: relative; }
+.mod-sub-option { margin-top: 10px; padding: 8px 12px; background: linear-gradient(135deg, #1a0030, #2d0050); border: 1px solid rgba(255,50,50,0.35); border-radius: 7px; display: none; }
+.mod-sub-option.show { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.mod-sub-option:hover { border-color: rgba(255,80,80,0.6); background: linear-gradient(135deg, #250040, #3a0060); }
+.mod-sub-icon { font-size: 20px; flex-shrink: 0; }
+.mod-sub-text { flex: 1; }
+.mod-sub-title { font-size: 12px; font-weight: 700; color: #ff9999; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
+.mod-sub-desc { font-size: 10px; color: rgba(255,200,200,0.7); line-height: 1.5; }
+.mod-sub-check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(255,80,80,0.5); background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+.mod-sub-option.checked .mod-sub-check { background: #c0392b; border-color: #e74c3c; }
+.mod-sub-check-inner { color: #fff; font-size: 11px; font-weight: 900; opacity: 0; transition: opacity 0.15s; }
+.mod-sub-option.checked .mod-sub-check-inner { opacity: 1; }
+.evil-ate-flash { position: absolute; inset: 0; background: rgba(200,0,0,0.18); border-radius: 3px; pointer-events: none; opacity: 0; transition: opacity 0.3s; }
+.evil-ate-flash.active { opacity: 1; }
 .snake-reward-msg { background: linear-gradient(90deg, #d4a017, #c8920a); color: #fff; text-align: center; padding: 6px 14px; font-size: 12px; font-weight: 700; display: none; }
 .snake-reward-msg.show { display: block; animation: fadeIn 0.3s ease; }
 
@@ -682,7 +695,6 @@ a:hover { text-decoration: underline; }
       <button class="mod-modal-close" onclick="closeModifiers()">×</button>
     </div>
     <div class="mod-modal-body">
-      <!-- Злой Двойник -->
       <div class="mod-card" id="modEvilCard">
         <div class="mod-card-row">
           <div class="mod-icon">👿</div>
@@ -691,12 +703,21 @@ a:hover { text-decoration: underline; }
               Злой Двойник
               <span class="mod-badge">БУСТ +1 П-БАЛЛ</span>
             </div>
-            <div class="mod-card-desc">Злая змейка гонится за тобой и растёт вместе с тобой — когда ты ешь яблоко, она тоже становится длиннее! Касание = смерть. Можно добавить до 2 двойников.</div>
+            <div class="mod-card-desc">Злая змейка умно преследует тебя по кратчайшему пути — когда ты ешь яблоко, она тоже растёт! Касание = смерть. Можно добавить до 2 двойников.</div>
             <div class="mod-count-wrap">
               <span class="mod-count-label">👿 Количество двойников:</span>
               <button class="mod-count-btn" id="evilBtnMinus" onclick="changeEvilCount(-1)">−</button>
               <span class="mod-count-display" id="evilCountVal">0</span>
               <button class="mod-count-btn" id="evilBtnPlus" onclick="changeEvilCount(1)">+</button>
+            </div>
+            <!-- Жадность Зла sub-option -->
+            <div class="mod-sub-option" id="evilGreedToggle" onclick="toggleEvilGreed()">
+              <div class="mod-sub-icon">🍏</div>
+              <div class="mod-sub-text">
+                <div class="mod-sub-title">Жадность Зла <span style="font-size:9px;background:rgba(255,80,80,0.25);border-radius:6px;padding:1px 6px;color:#ffaaaa;">SUB-МОД</span></div>
+                <div class="mod-sub-desc">Злой двойник может есть яблоки вместо тебя — и расти! Яблоко исчезает, счёт игрока не растёт.</div>
+              </div>
+              <div class="mod-sub-check"><span class="mod-sub-check-inner">✓</span></div>
             </div>
           </div>
           <div class="mod-check"><span class="mod-check-inner">✓</span></div>
@@ -745,6 +766,7 @@ a:hover { text-decoration: underline; }
     <div class="snake-canvas-wrap">
       <div class="snake-canvas-container">
         <canvas id="snakeCanvas" width="400" height="400"></canvas>
+        <div class="evil-ate-flash" id="evilAteFlash"></div>
         <div class="snake-overlay-msg" id="snakeOverlay">
           <h3>🐍 Змейка</h3>
           <p>5 яблок = 1 П-Балл</p>
@@ -1576,7 +1598,7 @@ function showGames() {
 }
 
 // ===== МОДИФИКАТОРЫ =====
-let snakeMods = { evilCount: 0, badApple: false };
+let snakeMods = { evilCount: 0, badApple: false, evilGreed: false };
 
 function openModifiers() {
   renderModUI();
@@ -1591,6 +1613,12 @@ function closeModifiersAndPlay() {
 }
 function changeEvilCount(delta) {
   snakeMods.evilCount = Math.max(0, Math.min(2, snakeMods.evilCount + delta));
+  if (snakeMods.evilCount === 0) snakeMods.evilGreed = false;
+  renderModUI();
+}
+function toggleEvilGreed() {
+  if (snakeMods.evilCount === 0) return;
+  snakeMods.evilGreed = !snakeMods.evilGreed;
   renderModUI();
 }
 function toggleBadApple() {
@@ -1603,6 +1631,11 @@ function renderModUI() {
   document.getElementById('evilBtnMinus').disabled = snakeMods.evilCount === 0;
   document.getElementById('evilBtnPlus').disabled = snakeMods.evilCount === 2;
   document.getElementById('modEvilCard').classList.toggle('active', snakeMods.evilCount > 0);
+  // Evil greed sub-option
+  const greedToggle = document.getElementById('evilGreedToggle');
+  if (snakeMods.evilCount > 0) { greedToggle.classList.add('show'); }
+  else { greedToggle.classList.remove('show', 'checked'); }
+  greedToggle.classList.toggle('checked', snakeMods.evilGreed);
   // Bad apple card
   document.getElementById('modBadAppleCard').classList.toggle('active', snakeMods.badApple);
   // Update modifier button appearance
@@ -1616,6 +1649,7 @@ function getModTags() {
   const tags = [];
   if (snakeMods.evilCount === 1) tags.push('👿 Злой Двойник ×1');
   if (snakeMods.evilCount === 2) tags.push('👿 Злой Двойник ×2');
+  if (snakeMods.evilGreed) tags.push('🍏 Жадность Зла');
   if (snakeMods.badApple) tags.push('🍎 Плохое Яблоко');
   return tags;
 }
@@ -1654,7 +1688,7 @@ function startSnake() {
   document.getElementById('snakeRewardMsg').classList.remove('show');
   if (snakeGame) snakeGame.stop();
 
-  const activeMods = { evilCount: snakeMods.evilCount, badApple: snakeMods.badApple };
+  const activeMods = { evilCount: snakeMods.evilCount, badApple: snakeMods.badApple, evilGreed: snakeMods.evilGreed };
   const bonusPerReward = activeMods.evilCount + (activeMods.badApple ? 1 : 0);
 
   snakeGame = window._snakeGame = new SnakeGame('snakeCanvas', {
@@ -1772,26 +1806,93 @@ class SnakeGame {
     }
   }
   moveEvil(evil) {
-    const target = this.snake[0];
     const eHead = evil.body[0];
-    const dirs = [{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}];
-    let bestDir = null, bestDist = Infinity;
-    for (const d of dirs) {
-      if (evil.body.length > 1) {
-        const neck = evil.body[1];
-        if (eHead.x+d.x===neck.x && eHead.y+d.y===neck.y) continue;
-      }
-      const nx = eHead.x+d.x, ny = eHead.y+d.y;
-      if (nx<0||nx>=this.COLS||ny<0||ny>=this.ROWS) continue;
-      if (evil.body.some(s=>s.x===nx&&s.y===ny)) continue;
-      const dist = Math.abs(nx-target.x)+Math.abs(ny-target.y);
-      if (dist < bestDist) { bestDist = dist; bestDir = d; }
+    // Target: chase player head (or apple if evilGreed and apple is closer)
+    let target = this.snake[0];
+    if (this.mods.evilGreed && this.apple) {
+      const distToPlayer = Math.abs(eHead.x - this.snake[0].x) + Math.abs(eHead.y - this.snake[0].y);
+      const distToApple  = Math.abs(eHead.x - this.apple.x)   + Math.abs(eHead.y - this.apple.y);
+      // Go for apple if it's closer OR with 30% chance even if not
+      if (distToApple < distToPlayer || Math.random() < 0.30) target = this.apple;
     }
-    if (!bestDir) return;
-    const newHead = {x: eHead.x+bestDir.x, y: eHead.y+bestDir.y};
+
+    const key = (x, y) => `${x},${y}`;
+    // Build blocked set: evil snake body (minus tail if not growing), player snake body (minus tail)
+    const blocked = new Set();
+    const eTailCut = evil.growNext ? evil.body.length : evil.body.length - 1;
+    for (let i = 0; i < eTailCut; i++) blocked.add(key(evil.body[i].x, evil.body[i].y));
+    const pTailCut = this.snake.length - 1;
+    for (let i = 0; i < pTailCut; i++) blocked.add(key(this.snake[i].x, this.snake[i].y));
+    // Other evil snakes
+    for (const other of this.evilSnakes) {
+      if (other === evil) continue;
+      other.body.forEach(s => blocked.add(key(s.x, s.y)));
+    }
+
+    const dirs = [{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}];
+    // BFS to find first step toward target
+    const visited = new Set([key(eHead.x, eHead.y)]);
+    const queue = [{pos: eHead, firstDir: null}];
+    let bestDir = null;
+
+    outer: while (queue.length > 0) {
+      const {pos, firstDir} = queue.shift();
+      for (const d of dirs) {
+        const nx = pos.x + d.x, ny = pos.y + d.y;
+        if (nx < 0 || nx >= this.COLS || ny < 0 || ny >= this.ROWS) continue;
+        const k = key(nx, ny);
+        if (visited.has(k) || blocked.has(k)) continue;
+        visited.add(k);
+        const fd = firstDir || d;
+        if (nx === target.x && ny === target.y) { bestDir = fd; break outer; }
+        queue.push({pos: {x:nx, y:ny}, firstDir: fd});
+      }
+    }
+
+    // Fallback: any valid direction (avoid walls & self)
+    if (!bestDir) {
+      // Sort by Manhattan distance to player as tiebreak
+      const validDirs = dirs
+        .map(d => { const nx = eHead.x+d.x, ny = eHead.y+d.y; return {d, nx, ny}; })
+        .filter(({nx,ny}) => nx>=0&&nx<this.COLS&&ny>=0&&ny<this.ROWS && !blocked.has(key(nx,ny)))
+        .sort((a,b) =>
+          (Math.abs(a.nx-this.snake[0].x)+Math.abs(a.ny-this.snake[0].y)) -
+          (Math.abs(b.nx-this.snake[0].x)+Math.abs(b.ny-this.snake[0].y)));
+      if (validDirs.length) bestDir = validDirs[0].d;
+    }
+
+    if (!bestDir) return; // stuck — don't move
+
+    const newHead = {x: eHead.x + bestDir.x, y: eHead.y + bestDir.y};
     evil.body.unshift(newHead);
-    if (evil.growNext) { evil.growNext = false; }
-    else { evil.body.pop(); }
+
+    // Evil greed: evil ate the apple?
+    let ateApple = false;
+    if (this.mods.evilGreed && this.apple && newHead.x === this.apple.x && newHead.y === this.apple.y) {
+      ateApple = true;
+      // Evil grows from eating
+      // Respawn apple
+      this.apple = this.rndPos(this.allOccupied());
+      if (this.mods.badApple) this.badApple = this.rndPos(this.allOccupied());
+      // Visual flash
+      this._triggerEvilAteFlash();
+    }
+
+    if (ateApple) {
+      // Tail stays — evil grew
+    } else if (evil.growNext) {
+      evil.growNext = false;
+      // Tail stays — grew from player eating
+    } else {
+      evil.body.pop();
+    }
+  }
+
+  _triggerEvilAteFlash() {
+    const flash = document.getElementById('evilAteFlash');
+    if (!flash) return;
+    flash.classList.add('active');
+    setTimeout(() => flash.classList.remove('active'), 350);
   }
   tick() {
     if (!this.running) return;
@@ -1898,11 +1999,17 @@ class SnakeGame {
             ? [{dx:C*0.65,dy:C*0.3},{dx:C*0.65,dy:C*0.65}]
             : [{dx:C*0.3,dy:C*0.35},{dx:C*0.65,dy:C*0.35}];
           eyeOff.forEach(e => { ctx.beginPath(); ctx.arc(sx+e.dx, sy+e.dy, 2.5, 0, Math.PI*2); ctx.fill(); });
-          // Злобная метка (× на голове)
+          // Эмодзи головы: если жадность включена — показываем 🍏 над головой иногда
           ctx.fillStyle = 'rgba(255,200,0,0.7)';
           ctx.font = 'bold 8px Arial';
           ctx.textAlign = 'center';
-          ctx.fillText('👿', sx+C/2, sy+C/2+3);
+          ctx.fillText(this.mods.evilGreed ? '😈' : '👿', sx+C/2, sy+C/2+3);
+          // Если жадность — рисуем зелёную полоску снизу головы (размер/длина)
+          if (this.mods.evilGreed) {
+            const lenFraction = Math.min(1, (evil.body.length - 3) / 12);
+            ctx.fillStyle = `rgba(0,255,100,${0.4 + lenFraction * 0.5})`;
+            ctx.fillRect(sx+2, sy+C-3, Math.floor((C-4) * lenFraction), 2);
+          }
         }
       });
     });
