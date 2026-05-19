@@ -2205,7 +2205,7 @@ class SnakeGame {
     this._triTimer = setTimeout(() => {
       if (!this.running || !this.triangle) return;
       this._trianglePlanPath();
-    }, 2500);
+    }, 500);
   }
   _triangleBFS(from, to) {
     // BFS from triangle pos to target, returns array of cells [{x,y}]
@@ -2274,7 +2274,7 @@ class SnakeGame {
     this._triTimer = setTimeout(() => {
       if (!this.running || !this.triangle) return;
       this._triangleStartRush();
-    }, 2000);
+    }, 1500);
   }
   _triangleStartRush() {
     if (!this.running || !this.triangle) return;
