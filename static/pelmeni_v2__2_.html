@@ -242,20 +242,20 @@ a:hover { text-decoration: underline; }
 .btn-modifiers.has-mods { background: linear-gradient(180deg, #f59e0b, #d97706); border-color: #92400e; box-shadow: 0 0 8px rgba(245,158,11,0.4), inset 0 1px 0 rgba(255,255,255,0.2); }
 .mod-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 700; display: none; align-items: center; justify-content: center; }
 .mod-modal-overlay.open { display: flex; }
-.mod-modal { background: #fff; border-radius: 10px; width: 440px; box-shadow: 0 8px 48px rgba(0,0,0,0.38); overflow: hidden; animation: fadeIn 0.2s ease; }
-.mod-modal-header { background: linear-gradient(135deg, #7c3aed, #5b21b6); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; }
-.mod-modal-title { font-size: 15px; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+.mod-modal { background: #fff; border-radius: 10px; width: 400px; max-height: 82vh; display: flex; flex-direction: column; box-shadow: 0 8px 48px rgba(0,0,0,0.38); overflow: hidden; animation: fadeIn 0.2s ease; }
+.mod-modal-header { background: linear-gradient(135deg, #7c3aed, #5b21b6); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.mod-modal-title { font-size: 14px; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
 .mod-modal-close { color: rgba(255,255,255,0.75); font-size: 22px; cursor: pointer; background: none; border: none; line-height: 1; }
 .mod-modal-close:hover { color: #fff; }
-.mod-modal-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
-.mod-card { border: 2px solid #e5e7eb; border-radius: 8px; padding: 12px 14px; position: relative; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; }
+.mod-modal-body { padding: 10px 12px; display: flex; flex-direction: column; gap: 7px; overflow-y: auto; flex: 1; }
+.mod-card { border: 2px solid #e5e7eb; border-radius: 8px; padding: 8px 10px; position: relative; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; }
 .mod-card.active { border-color: #7c3aed; background: linear-gradient(135deg, #faf5ff, #f3e8ff); box-shadow: 0 2px 12px rgba(124,58,237,0.18); }
-.mod-card-row { display: flex; align-items: flex-start; gap: 10px; }
-.mod-icon { font-size: 28px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+.mod-card-row { display: flex; align-items: flex-start; gap: 8px; }
+.mod-icon { font-size: 22px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
 .mod-card-content { flex: 1; min-width: 0; }
-.mod-card-title { font-size: 13px; font-weight: 700; color: #1f1f1f; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+.mod-card-title { font-size: 12px; font-weight: 700; color: #1f1f1f; display: flex; align-items: center; gap: 6px; margin-bottom: 2px; flex-wrap: wrap; }
 .mod-badge { background: linear-gradient(90deg, #d97706, #f59e0b); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; white-space: nowrap; text-shadow: 0 1px 2px rgba(0,0,0,0.2); letter-spacing: 0.03em; }
-.mod-card-desc { font-size: 11px; color: #555; line-height: 1.55; }
+.mod-card-desc { font-size: 10px; color: #555; line-height: 1.5; }
 .mod-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #d1d5db; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; margin-top: 2px; }
 .mod-card.active .mod-check { background: #7c3aed; border-color: #7c3aed; }
 .mod-check-inner { color: #fff; font-size: 13px; font-weight: 900; opacity: 0; transition: opacity 0.15s; }
@@ -267,7 +267,7 @@ a:hover { text-decoration: underline; }
 .mod-count-btn:active { transform: scale(0.9); }
 .mod-count-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .mod-count-display { font-size: 18px; font-weight: 900; color: #5b21b6; min-width: 28px; text-align: center; }
-.mod-modal-footer { padding: 12px 16px 14px; display: flex; gap: 8px; border-top: 1px solid #f0f0f0; }
+.mod-modal-footer { padding: 8px 12px 10px; display: flex; gap: 8px; border-top: 1px solid #f0f0f0; flex-shrink: 0; }
 .btn-start-with-mods { background: linear-gradient(180deg, #5b8fc9, #4a76a8); border: 1px solid #2a5080; border-radius: 4px; color: #fff; font-size: 13px; font-weight: 700; padding: 9px 20px; cursor: pointer; flex: 1; box-shadow: inset 0 1px 0 rgba(255,255,255,0.18); transition: filter 0.15s; }
 .btn-start-with-mods:hover { filter: brightness(1.08); }
 .mod-active-bar { background: linear-gradient(90deg, #4c1d95, #7c3aed); padding: 4px 14px; font-size: 11px; color: #e9d5ff; display: none; gap: 8px; align-items: center; flex-wrap: wrap; }
