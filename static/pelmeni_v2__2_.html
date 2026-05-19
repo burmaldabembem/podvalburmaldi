@@ -1139,7 +1139,7 @@ a:hover { text-decoration: underline; }
               <div class="mod-sub-icon">🥔</div>
               <div class="mod-sub-text">
                 <div class="mod-sub-title">Горячая Картошка <span style="font-size:9px;background:rgba(255,80,80,0.25);border-radius:6px;padding:1px 6px;color:#ffaaaa;">SUB-МОД</span></div>
-                <div class="mod-sub-desc">Таймер <b>10 секунд</b> вместо 25. Чёрный змей убивает мгновенно при касании!</div>
+                <div class="mod-sub-desc">Таймер <b>15 секунд</b> вместо 25. Чёрный змей не появляется — по окончании таймера игрок просто умирает мгновенно!</div>
               </div>
               <div class="mod-sub-check"><span class="mod-sub-check-inner">✓</span></div>
             </div>
@@ -2310,7 +2310,7 @@ class SnakeGame {
       };
     }
     // ===== ТАЙМЕР МОД =====
-    this.timerSec = this.mods.hotPotato ? 10 : 25;
+    this.timerSec = this.mods.hotPotato ? 15 : 25;
     this.timerMax = this.timerSec;
     this._timerInterval = null;
     this.timerExpired = false;
@@ -2386,10 +2386,17 @@ class SnakeGame {
     let nd = map[e.key];
     if (nd) {
       if (this.invertControls) nd = {x: -nd.x, y: -nd.y};
+      // Кьо: если игрок пытается повернуть (сменить направление) — смерть
+      if (this.mods.kyoMod && this.kyoVisible) {
+        const isTurn = !(nd.x === this.dir.x && nd.y === this.dir.y) &&
+                       !(nd.x === -this.dir.x && nd.y === -this.dir.y);
+        if (isTurn) {
+          e.preventDefault();
+          this._handleDeath();
+          return;
+        }
+      }
       if (!(nd.x === -this.dir.x && nd.y === -this.dir.y)) this.nextDir = nd;
-      e.preventDefault();
-    } else if (this.mods.kyoMod && this.kyoVisible) {
-      // Block ALL non-movement keys during kyo
       e.preventDefault();
     }
   }
@@ -2404,7 +2411,15 @@ class SnakeGame {
       this._updateTimerUI();
       if (this.timerSec <= 0) {
         this.timerExpired = true;
-        this._onTimerExpired();
+        if (this.mods.hotPotato) {
+          // Горячая Картошка — мгновенная смерть по таймеру
+          clearInterval(this._timerInterval);
+          this._timerInterval = null;
+          this._handleDeath();
+        } else {
+          // Обычный режим — появляется чёрный змей
+          this._onTimerExpired();
+        }
       }
     }, 1000);
   }
@@ -2465,25 +2480,21 @@ class SnakeGame {
     // Clamp
     nx = Math.max(0, Math.min(this.COLS-1, nx));
     ny = Math.max(0, Math.min(this.ROWS-1, ny));
-    // Check if touches player
-    const hitPlayer = this.snake.some(s => s.x === nx && s.y === ny);
     this.blackSnake.body.unshift({x: nx, y: ny});
     this.blackSnake.body.pop();
+    // Check if touches any part of player snake — always kills
+    const hitPlayer = this.snake.some(s => s.x === nx && s.y === ny);
     if (hitPlayer) {
-      if (this.mods.hotPotato) {
-        // Instant kill
-        clearInterval(this._blackSnakeInterval);
-        this._blackSnakeInterval = null;
-        this.gameOver();
-      } else {
-        // Just annoy, don't kill — snake passes through
-      }
+      clearInterval(this._blackSnakeInterval);
+      this._blackSnakeInterval = null;
+      this._handleDeath();
+      return;
     }
     this.draw();
   }
   _resetTimer() {
     this.timerExpired = false;
-    this.timerSec = this.mods.hotPotato ? 10 : 25;
+    this.timerSec = this.mods.hotPotato ? 15 : 25;
     this._updateTimerUI();
     // Remove black snake
     if (this._blackSnakeInterval) { clearInterval(this._blackSnakeInterval); this._blackSnakeInterval = null; }
@@ -2820,6 +2831,7 @@ class SnakeGame {
     if (this.badApple && head.x===this.badApple.x && head.y===this.badApple.y) {
       this._handleDeath(); return;
     }
+    // Кьо Змейка — смерть за поворот обрабатывается в handleKey
     // Золотое яблоко (таймер мод)
     if (this.mods.timerMod && this.goldApple && head.x===this.goldApple.x && head.y===this.goldApple.y) {
       this.goldApple = null;
@@ -3216,10 +3228,18 @@ async function renderSnakeLeaderboard() {
 // ===== МОБИЛЬНОЕ УПРАВЛЕНИЕ ЗМЕЙКОЙ =====
 function dpadPress(dir) {
   if (!window._snakeGame || !window._snakeGame.running) return;
+  const g = window._snakeGame;
   const map = { up:{x:0,y:-1}, down:{x:0,y:1}, left:{x:-1,y:0}, right:{x:1,y:0} };
   const nd = map[dir];
-  if (nd && !(nd.x === -window._snakeGame.dir.x && nd.y === -window._snakeGame.dir.y)) {
-    window._snakeGame.nextDir = nd;
+  if (!nd) return;
+  // Кьо: поворот = смерть
+  if (g.mods.kyoMod && g.kyoVisible) {
+    const isTurn = !(nd.x === g.dir.x && nd.y === g.dir.y) &&
+                   !(nd.x === -g.dir.x && nd.y === -g.dir.y);
+    if (isTurn) { g._handleDeath(); return; }
+  }
+  if (!(nd.x === -g.dir.x && nd.y === -g.dir.y)) {
+    g.nextDir = nd;
   }
 }
 
