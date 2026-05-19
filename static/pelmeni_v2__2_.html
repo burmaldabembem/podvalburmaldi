@@ -888,6 +888,8 @@ async function loadAds() {
   }
   renderAd();
   startAdRotation();
+  // повторный рендер через 2 сек на случай если DOM ещё не был готов
+  setTimeout(renderAd, 2000);
 }
 
 async function loadOnline() {
@@ -1357,25 +1359,25 @@ async function publishAd() {
 }
 
 function renderAd() {
-  if (!allAds.length) {
-    const emptyHtml = '<div class="sad-empty">Объявлений пока нет</div>';
-    const el = document.getElementById('sidebarAdContent');
-    if (el) el.innerHTML = emptyHtml;
-    const elR = document.getElementById('sidebarAdContentRight');
-    if (elR) elR.innerHTML = emptyHtml;
-    return;
-  }
-  const ad = allAds[currentAdIdx % allAds.length];
-  console.log('[renderAd] объявление:', JSON.stringify(ad));
-  // поддерживаем разные возможные имена полей от бэкенда
-  const adTitle  = ad.title  || ad.name        || ad.headline    || '(без заголовка)';
-  const adText   = ad.text   || ad.body        || ad.content     || ad.description || '';
-  const adAuthor = ad.author || ad.login       || ad.user        || ad.username    || '';
-  const adHtml = `<div class="sad-body"><div class="sad-title">${escHtml(adTitle)}</div><div class="sad-text">${escHtml(adText)}</div><div class="sad-author">— ${escHtml(adAuthor)}</div></div>`;
-  const el = document.getElementById('sidebarAdContent');
-  if (el) el.innerHTML = adHtml;
+  const makeHtml = (ad) => {
+    if (!ad) return '<div class="sad-empty">Объявлений пока нет</div>';
+    const adTitle  = ad.title  || ad.name    || ad.headline || '(без заголовка)';
+    const adText   = ad.text   || ad.body    || ad.content  || ad.description || '';
+    const adAuthor = ad.author || ad.login   || ad.user     || ad.username    || '';
+    return `<div class="sad-body"><div class="sad-title">${escHtml(adTitle)}</div><div class="sad-text">${escHtml(adText)}</div><div class="sad-author">— ${escHtml(adAuthor)}</div></div>`;
+  };
+
+  const html = allAds.length
+    ? makeHtml(allAds[currentAdIdx % allAds.length])
+    : '<div class="sad-empty">Объявлений пока нет</div>';
+
+  const el  = document.getElementById('sidebarAdContent');
   const elR = document.getElementById('sidebarAdContentRight');
-  if (elR) elR.innerHTML = adHtml;
+  console.log('[renderAd] sidebarAdContent:', el, '| sidebarAdContentRight:', elR);
+  if (el)  { el.innerHTML  = html; console.log('[renderAd] LEFT  обновлён'); }
+  else       console.warn('[renderAd] ЛЕВЫЙ элемент НЕ НАЙДЕН — проверь DOM');
+  if (elR) { elR.innerHTML = html; console.log('[renderAd] RIGHT обновлён'); }
+  else       console.warn('[renderAd] ПРАВЫЙ элемент НЕ НАЙДЕН — проверь DOM');
 }
 
 function startAdRotation() {
