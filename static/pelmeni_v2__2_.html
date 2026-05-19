@@ -290,6 +290,9 @@ a:hover { text-decoration: underline; }
 .evil-ate-flash.active { opacity: 1; }
 .snake-reward-msg { background: linear-gradient(90deg, #d4a017, #c8920a); color: #fff; text-align: center; padding: 6px 14px; font-size: 12px; font-weight: 700; display: none; }
 .snake-reward-msg.show { display: block; animation: fadeIn 0.3s ease; }
+.anticontrol-flash { position: absolute; inset: 0; background: rgba(255,100,0,0.13); border-radius: 3px; pointer-events: none; opacity: 0; transition: opacity 0.4s; border: 2px solid rgba(255,120,0,0); }
+.anticontrol-flash.active { opacity: 1; border-color: rgba(255,120,0,0.6); animation: antiPulse 0.8s infinite; }
+@keyframes antiPulse { 0%,100%{border-color:rgba(255,120,0,0.3)} 50%{border-color:rgba(255,180,0,0.8)} }
 
 /* ТОП ОЧКОВ ЗМЕЙКИ */
 .snake-top { margin-top: 10px; border-top: 1px solid #edf0f4; padding-top: 8px; }
@@ -739,6 +742,36 @@ a:hover { text-decoration: underline; }
         </div>
       </div>
 
+      <!-- Антиуправление -->
+      <div class="mod-card" id="modAntiControlCard" onclick="toggleAntiControl()" style="cursor:pointer">
+        <div class="mod-card-row">
+          <div class="mod-icon">🔄</div>
+          <div class="mod-card-content">
+            <div class="mod-card-title">
+              Антиуправление
+              <span class="mod-badge">БУСТ +2 П-БАЛЛА</span>
+            </div>
+            <div class="mod-card-desc">Каждые 2–16 секунд все кнопки управления инвертируются (влево→вправо, вверх→вниз). Через 2–6 секунд управление возвращается. Следи за оранжевой рамкой!</div>
+          </div>
+          <div class="mod-check"><span class="mod-check-inner">✓</span></div>
+        </div>
+      </div>
+
+      <!-- Стена -->
+      <div class="mod-card" id="modWallCard" onclick="toggleWallMod()" style="cursor:pointer">
+        <div class="mod-card-row">
+          <div class="mod-icon">🧱</div>
+          <div class="mod-card-content">
+            <div class="mod-card-title">
+              Стена
+              <span class="mod-badge">БУСТ +1 П-БАЛЛ</span>
+            </div>
+            <div class="mod-card-desc">Каждый раз когда ты съедаешь яблоко, в случайном месте появляется стена из 3 блоков. Касание стены — смерть! Карта со временем зарастает препятствиями.</div>
+          </div>
+          <div class="mod-check"><span class="mod-check-inner">✓</span></div>
+        </div>
+      </div>
+
       <div style="font-size:11px;color:#9ca3af;text-align:center;padding:4px 0;">Активные модификаторы дают дополнительные П-Баллы при каждой награде!</div>
     </div>
     <div class="mod-modal-footer">
@@ -767,6 +800,7 @@ a:hover { text-decoration: underline; }
       <div class="snake-canvas-container">
         <canvas id="snakeCanvas" width="400" height="400"></canvas>
         <div class="evil-ate-flash" id="evilAteFlash"></div>
+        <div class="anticontrol-flash" id="antiControlFlash"></div>
         <div class="snake-overlay-msg" id="snakeOverlay">
           <h3>🐍 Змейка</h3>
           <p>5 яблок = 1 П-Балл</p>
@@ -1598,7 +1632,7 @@ function showGames() {
 }
 
 // ===== МОДИФИКАТОРЫ =====
-let snakeMods = { evilCount: 0, badApple: false, evilGreed: false };
+let snakeMods = { evilCount: 0, badApple: false, evilGreed: false, antiControl: false, wallMod: false };
 
 function openModifiers() {
   renderModUI();
@@ -1625,6 +1659,14 @@ function toggleBadApple() {
   snakeMods.badApple = !snakeMods.badApple;
   renderModUI();
 }
+function toggleAntiControl() {
+  snakeMods.antiControl = !snakeMods.antiControl;
+  renderModUI();
+}
+function toggleWallMod() {
+  snakeMods.wallMod = !snakeMods.wallMod;
+  renderModUI();
+}
 function renderModUI() {
   // Evil card
   document.getElementById('evilCountVal').textContent = snakeMods.evilCount;
@@ -1638,8 +1680,12 @@ function renderModUI() {
   greedToggle.classList.toggle('checked', snakeMods.evilGreed);
   // Bad apple card
   document.getElementById('modBadAppleCard').classList.toggle('active', snakeMods.badApple);
+  // Anti-control card
+  document.getElementById('modAntiControlCard').classList.toggle('active', snakeMods.antiControl);
+  // Wall mod card
+  document.getElementById('modWallCard').classList.toggle('active', snakeMods.wallMod);
   // Update modifier button appearance
-  const hasAny = snakeMods.evilCount > 0 || snakeMods.badApple;
+  const hasAny = snakeMods.evilCount > 0 || snakeMods.badApple || snakeMods.antiControl || snakeMods.wallMod;
   const btnMod = document.getElementById('btnModifiers');
   if (btnMod) btnMod.classList.toggle('has-mods', hasAny);
   // Update active bars
@@ -1651,6 +1697,8 @@ function getModTags() {
   if (snakeMods.evilCount === 2) tags.push('👿 Злой Двойник ×2');
   if (snakeMods.evilGreed) tags.push('🍏 Жадность Зла');
   if (snakeMods.badApple) tags.push('🍎 Плохое Яблоко');
+  if (snakeMods.antiControl) tags.push('🔄 Антиуправление');
+  if (snakeMods.wallMod) tags.push('🧱 Стена');
   return tags;
 }
 function updateModActiveBars() {
@@ -1688,8 +1736,8 @@ function startSnake() {
   document.getElementById('snakeRewardMsg').classList.remove('show');
   if (snakeGame) snakeGame.stop();
 
-  const activeMods = { evilCount: snakeMods.evilCount, badApple: snakeMods.badApple, evilGreed: snakeMods.evilGreed };
-  const bonusPerReward = activeMods.evilCount + (activeMods.badApple ? 1 : 0);
+  const activeMods = { evilCount: snakeMods.evilCount, badApple: snakeMods.badApple, evilGreed: snakeMods.evilGreed, antiControl: snakeMods.antiControl, wallMod: snakeMods.wallMod };
+  const bonusPerReward = activeMods.evilCount + (activeMods.badApple ? 1 : 0) + (activeMods.antiControl ? 2 : 0) + (activeMods.wallMod ? 1 : 0);
 
   snakeGame = window._snakeGame = new SnakeGame('snakeCanvas', {
     onScore: (score, apples) => {
@@ -1751,6 +1799,11 @@ class SnakeGame {
     this.speed = 150;
     this.running = false;
     this.interval = null;
+    // Антиуправление
+    this.invertControls = false;
+    this._antiTimer = null;
+    // Стены
+    this.wallCells = [];
     // Яблоко
     this.apple = this.rndPos([...this.snake]);
     // Плохое яблоко
@@ -1781,16 +1834,22 @@ class SnakeGame {
     this.evilSnakes.forEach(e => occ.push(...e.body));
     if (this.apple) occ.push(this.apple);
     if (this.badApple) occ.push(this.badApple);
+    if (this.wallCells) occ.push(...this.wallCells);
     return occ;
   }
   start() {
     this.running = true;
     this.interval = setInterval(() => this.tick(), this.speed);
+    if (this.mods.antiControl) this._scheduleAntiControl();
     this.draw();
   }
   stop() {
     this.running = false;
     if (this.interval) clearInterval(this.interval);
+    if (this._antiTimer) clearTimeout(this._antiTimer);
+    this.invertControls = false;
+    const flash = document.getElementById('antiControlFlash');
+    if (flash) flash.classList.remove('active');
     document.removeEventListener('keydown', this._keyHandler);
   }
   handleKey(e) {
@@ -1799,10 +1858,53 @@ class SnakeGame {
       w:{x:0,y:-1}, s:{x:0,y:1}, a:{x:-1,y:0}, d:{x:1,y:0},
       W:{x:0,y:-1}, S:{x:0,y:1}, A:{x:-1,y:0}, D:{x:1,y:0},
     };
-    const nd = map[e.key];
+    let nd = map[e.key];
     if (nd) {
+      if (this.invertControls) nd = {x: -nd.x, y: -nd.y};
       if (!(nd.x === -this.dir.x && nd.y === -this.dir.y)) this.nextDir = nd;
       e.preventDefault();
+    }
+  }
+  _scheduleAntiControl() {
+    if (!this.running) return;
+    const waitMs = 2000 + Math.random() * 14000; // 2–16 сек до инверсии
+    this._antiTimer = setTimeout(() => {
+      if (!this.running) return;
+      this.invertControls = true;
+      const flash = document.getElementById('antiControlFlash');
+      if (flash) flash.classList.add('active');
+      const holdMs = 2000 + Math.random() * 4000; // 2–6 сек инверсия
+      this._antiTimer = setTimeout(() => {
+        if (!this.running) return;
+        this.invertControls = false;
+        const flash2 = document.getElementById('antiControlFlash');
+        if (flash2) flash2.classList.remove('active');
+        this._scheduleAntiControl(); // планируем следующую
+      }, holdMs);
+    }, waitMs);
+  }
+  _spawnWall() {
+    // Спавним стену из 3 блоков (горизонтально или вертикально) в рандомном месте
+    const occ = new Set();
+    this.snake.forEach(s => occ.add(`${s.x},${s.y}`));
+    this.evilSnakes.forEach(e => e.body.forEach(s => occ.add(`${s.x},${s.y}`)));
+    this.wallCells.forEach(w => occ.add(`${w.x},${w.y}`));
+    occ.add(`${this.apple.x},${this.apple.y}`);
+    if (this.badApple) occ.add(`${this.badApple.x},${this.badApple.y}`);
+
+    const horiz = Math.random() < 0.5;
+    let attempts = 0;
+    while (attempts < 100) {
+      attempts++;
+      const x = Math.floor(Math.random() * (this.COLS - (horiz ? 2 : 0)));
+      const y = Math.floor(Math.random() * (this.ROWS - (horiz ? 0 : 2)));
+      const cells = horiz
+        ? [{x,y},{x:x+1,y},{x:x+2,y}]
+        : [{x,y},{x,y:y+1},{x,y:y+2}];
+      if (cells.every(c => !occ.has(`${c.x},${c.y}`))) {
+        this.wallCells.push(...cells);
+        break;
+      }
     }
   }
   moveEvil(evil) {
@@ -1902,6 +2004,8 @@ class SnakeGame {
     if (head.x<0||head.x>=this.COLS||head.y<0||head.y>=this.ROWS) { this.gameOver(); return; }
     // Сама себя
     if (this.snake.some(s=>s.x===head.x&&s.y===head.y)) { this.gameOver(); return; }
+    // Стены-препятствия (мод)
+    if (this.wallCells.some(w=>w.x===head.x&&w.y===head.y)) { this.gameOver(); return; }
     // Злые змейки — касание тела
     for (const evil of this.evilSnakes) {
       if (evil.body.some(s=>s.x===head.x&&s.y===head.y)) { this.gameOver(); return; }
@@ -1923,6 +2027,8 @@ class SnakeGame {
       if (this.mods.badApple) {
         this.badApple = this.rndPos(this.allOccupied());
       }
+      // Спавним стену (мод)
+      if (this.mods.wallMod) this._spawnWall();
       // Награда каждые 5 яблок
       if (this.apples % this.applesForCoin === 0) this.cb.onReward();
       // Ускорение
@@ -2030,6 +2136,39 @@ class SnakeGame {
         eyeOff.forEach(e => { ctx.beginPath(); ctx.arc(sx+e.dx, sy+e.dy, 2, 0, Math.PI*2); ctx.fill(); });
       }
     });
+
+    // === СТЕНЫ (мод) ===
+    if (this.wallCells && this.wallCells.length > 0) {
+      this.wallCells.forEach(w => {
+        const wx = w.x*C, wy = w.y*C;
+        const g = ctx.createLinearGradient(wx, wy, wx+C, wy+C);
+        g.addColorStop(0, '#a0522d'); g.addColorStop(1, '#5c2a00');
+        ctx.fillStyle = g;
+        ctx.fillRect(wx+1, wy+1, C-2, C-2);
+        // Кирпичный узор
+        ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(wx+1,wy+C/2); ctx.lineTo(wx+C-1,wy+C/2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(wx+C/2,wy+1); ctx.lineTo(wx+C/2,wy+C/2); ctx.stroke();
+        ctx.lineWidth = 0.5;
+      });
+    }
+
+    // === ИНДИКАТОР АНТИУПРАВЛЕНИЯ (текст на канвасе) ===
+    if (this.mods.antiControl && this.invertControls) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255,140,0,0.92)';
+      ctx.font = 'bold 13px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      const txt = '🔄 ИНВЕРСИЯ!';
+      const tw = ctx.measureText(txt).width + 20;
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
+      ctx.fillRect(this.canvas.width/2 - tw/2, 6, tw, 20);
+      ctx.fillStyle = '#ffaa00';
+      ctx.fillText(txt, this.canvas.width/2, 10);
+      ctx.restore();
+    }
   }
 }
 
