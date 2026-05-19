@@ -1131,14 +1131,14 @@ a:hover { text-decoration: underline; }
           <div class="mod-card-content">
             <div class="mod-card-title">
               Не Успеваешь
-              <span class="mod-badge">БУСТ +2 П-БАЛЛА</span>
+              <span class="mod-badge">БУСТ +1 П-БАЛЛ</span>
             </div>
             <div class="mod-card-desc">Запускается таймер <b>25 секунд</b>. Каждые 4 яблока спавнится <b>🍏 золотое яблоко</b>, которое сбрасывает таймер. Если таймер дойдёт до 0 — <b style="color:#dc2626">чёрный змей из 3 блоков</b> начнёт преследовать тебя пока таймер не сбросится!</div>
             <!-- Sub: Горячая Картошка -->
             <div class="mod-sub-option" id="hotPotatoToggle" onclick="event.stopPropagation();toggleHotPotato()">
               <div class="mod-sub-icon">🥔</div>
               <div class="mod-sub-text">
-                <div class="mod-sub-title">Горячая Картошка <span style="font-size:9px;background:rgba(255,80,80,0.25);border-radius:6px;padding:1px 6px;color:#ffaaaa;">SUB-МОД</span></div>
+                <div class="mod-sub-title">Горячая Картошка <span style="font-size:9px;background:rgba(255,80,80,0.25);border-radius:6px;padding:1px 6px;color:#ffaaaa;">SUB-МОД · +1 П-БАЛЛ</span></div>
                 <div class="mod-sub-desc">Таймер <b>15 секунд</b> вместо 25. Чёрный змей не появляется — по окончании таймера игрок просто умирает мгновенно!</div>
               </div>
               <div class="mod-sub-check"><span class="mod-sub-check-inner">✓</span></div>
@@ -1155,9 +1155,9 @@ a:hover { text-decoration: underline; }
           <div class="mod-card-content">
             <div class="mod-card-title">
               Кьо Этость?
-              <span class="mod-badge" style="background:linear-gradient(90deg,#15803d,#22c55e);">ХАОС</span>
+              <span class="mod-badge" style="background:linear-gradient(90deg,#15803d,#22c55e);">БУСТ +2 П-БАЛЛА</span>
             </div>
-            <div class="mod-card-desc">В любой момент в <b style="color:#22c55e">углу поля</b> появляется зелёная змейка. Пока она на экране — <b>нельзя ничего делать кроме ходьбы</b> (исчезает через 2 сек). Если умрёшь пока она видна — страница станет чёрной и напечатает «Почему» 5 раз...</div>
+            <div class="mod-card-desc">В любой момент в <b style="color:#22c55e">углу поля</b> появляется зелёная змейка. Пока она на экране — <b>нельзя ничего делать кроме ходьбы</b> (исчезает через 1 сек). Если умрёшь пока она видна — страница станет чёрной и напечатает «Почему» 5 раз...</div>
           </div>
           <div class="mod-check"><span class="mod-check-inner">✓</span></div>
         </div>
@@ -2211,7 +2211,7 @@ function startSnake() {
   if (snakeGame) snakeGame.stop();
 
   const activeMods = { evilCount: snakeMods.evilCount, badApple: snakeMods.badApple, evilGreed: snakeMods.evilGreed, antiControl: snakeMods.antiControl, wallMod: snakeMods.wallMod, evilTriangle: snakeMods.evilTriangle, timerMod: snakeMods.timerMod, hotPotato: snakeMods.hotPotato, kyoMod: snakeMods.kyoMod };
-  const bonusPerReward = activeMods.evilCount + (activeMods.badApple ? 1 : 0) + (activeMods.antiControl ? 2 : 0) + (activeMods.wallMod ? 1 : 0) + (activeMods.evilTriangle ? 2 : 0);
+  const bonusPerReward = activeMods.evilCount + (activeMods.badApple ? 1 : 0) + (activeMods.antiControl ? 2 : 0) + (activeMods.wallMod ? 1 : 0) + (activeMods.evilTriangle ? 2 : 0) + (activeMods.timerMod ? 1 : 0) + (activeMods.hotPotato ? 1 : 0) + (activeMods.kyoMod ? 2 : 0);
 
   snakeGame = window._snakeGame = new SnakeGame('snakeCanvas', {
     onScore: (score, apples) => {
@@ -2529,7 +2529,7 @@ class SnakeGame {
       if (wrap) wrap.classList.remove('visible');
       if (block) block.classList.remove('active');
       this._scheduleKyo();
-    }, 2000);
+    }, 1000);
   }
   _triggerKyoDeath() {
     // Страница чернеет, печатается "Почему" 5 раз
