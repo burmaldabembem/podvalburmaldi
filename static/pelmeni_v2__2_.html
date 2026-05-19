@@ -235,6 +235,45 @@ a:hover { text-decoration: underline; }
 .snake-overlay-msg p { font-size: 13px; color: rgba(255,255,255,0.8); }
 .btn-snake-start { background: linear-gradient(180deg, #5b8fc9, #4a76a8); border: 1px solid #2a5080; border-radius: 4px; color: #fff; font-size: 13px; font-weight: 700; padding: 9px 24px; cursor: pointer; }
 .btn-snake-start:hover { filter: brightness(1.1); }
+
+/* ===== МОДИФИКАТОРЫ ЗМЕЙКИ ===== */
+.btn-modifiers { background: linear-gradient(180deg, #7c3aed, #5b21b6); border: 1px solid #4c1d95; border-radius: 3px; color: #fff; font-size: 12px; font-weight: 700; padding: 7px 12px; cursor: pointer; transition: filter 0.15s; white-space: nowrap; box-shadow: inset 0 1px 0 rgba(255,255,255,0.15); text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+.btn-modifiers:hover { filter: brightness(1.12); }
+.btn-modifiers.has-mods { background: linear-gradient(180deg, #f59e0b, #d97706); border-color: #92400e; box-shadow: 0 0 8px rgba(245,158,11,0.4), inset 0 1px 0 rgba(255,255,255,0.2); }
+.mod-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 700; display: none; align-items: center; justify-content: center; }
+.mod-modal-overlay.open { display: flex; }
+.mod-modal { background: #fff; border-radius: 10px; width: 440px; box-shadow: 0 8px 48px rgba(0,0,0,0.38); overflow: hidden; animation: fadeIn 0.2s ease; }
+.mod-modal-header { background: linear-gradient(135deg, #7c3aed, #5b21b6); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; }
+.mod-modal-title { font-size: 15px; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+.mod-modal-close { color: rgba(255,255,255,0.75); font-size: 22px; cursor: pointer; background: none; border: none; line-height: 1; }
+.mod-modal-close:hover { color: #fff; }
+.mod-modal-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.mod-card { border: 2px solid #e5e7eb; border-radius: 8px; padding: 12px 14px; position: relative; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; }
+.mod-card.active { border-color: #7c3aed; background: linear-gradient(135deg, #faf5ff, #f3e8ff); box-shadow: 0 2px 12px rgba(124,58,237,0.18); }
+.mod-card-row { display: flex; align-items: flex-start; gap: 10px; }
+.mod-icon { font-size: 28px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+.mod-card-content { flex: 1; min-width: 0; }
+.mod-card-title { font-size: 13px; font-weight: 700; color: #1f1f1f; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+.mod-badge { background: linear-gradient(90deg, #d97706, #f59e0b); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; white-space: nowrap; text-shadow: 0 1px 2px rgba(0,0,0,0.2); letter-spacing: 0.03em; }
+.mod-card-desc { font-size: 11px; color: #555; line-height: 1.55; }
+.mod-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #d1d5db; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; margin-top: 2px; }
+.mod-card.active .mod-check { background: #7c3aed; border-color: #7c3aed; }
+.mod-check-inner { color: #fff; font-size: 13px; font-weight: 900; opacity: 0; transition: opacity 0.15s; }
+.mod-card.active .mod-check-inner { opacity: 1; }
+.mod-count-wrap { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(124,58,237,0.1); }
+.mod-count-label { font-size: 11px; color: #555; font-weight: 700; flex: 1; }
+.mod-count-btn { width: 30px; height: 30px; border-radius: 7px; border: 2px solid #7c3aed; background: #fff; color: #7c3aed; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.1s, transform 0.1s; line-height: 1; }
+.mod-count-btn:hover { background: #ede9fe; }
+.mod-count-btn:active { transform: scale(0.9); }
+.mod-count-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.mod-count-display { font-size: 18px; font-weight: 900; color: #5b21b6; min-width: 28px; text-align: center; }
+.mod-modal-footer { padding: 12px 16px 14px; display: flex; gap: 8px; border-top: 1px solid #f0f0f0; }
+.btn-start-with-mods { background: linear-gradient(180deg, #5b8fc9, #4a76a8); border: 1px solid #2a5080; border-radius: 4px; color: #fff; font-size: 13px; font-weight: 700; padding: 9px 20px; cursor: pointer; flex: 1; box-shadow: inset 0 1px 0 rgba(255,255,255,0.18); transition: filter 0.15s; }
+.btn-start-with-mods:hover { filter: brightness(1.08); }
+.mod-active-bar { background: linear-gradient(90deg, #4c1d95, #7c3aed); padding: 4px 14px; font-size: 11px; color: #e9d5ff; display: none; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mod-active-bar.show { display: flex; }
+.mod-active-tag { background: rgba(255,255,255,0.18); border-radius: 8px; padding: 2px 8px; font-weight: 700; font-size: 10px; color: #fff; white-space: nowrap; }
+@media (max-width: 700px) { .mod-modal { width: calc(100% - 20px); margin: 10px; } }
 .snake-canvas-container { position: relative; }
 .snake-reward-msg { background: linear-gradient(90deg, #d4a017, #c8920a); color: #fff; text-align: center; padding: 6px 14px; font-size: 12px; font-weight: 700; display: none; }
 .snake-reward-msg.show { display: block; animation: fadeIn 0.3s ease; }
@@ -517,7 +556,11 @@ a:hover { text-decoration: underline; }
           <div class="game-card-body">
             <div class="game-desc">Классическая змейка! Управляй змеёй стрелками или WASD, собирай яблоки и не врезайся в стены.</div>
             <div class="game-reward">🏆 Награда: <b>1 П-Балл</b> за каждые <b>5 яблок</b></div>
-            <button class="btn-play" onclick="openSnake()">▶ Играть</button>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px;">
+              <button class="btn-play" onclick="openSnake()">▶ Играть</button>
+              <button class="btn-modifiers" id="btnModifiers" onclick="openModifiers()">⚙ Модификаторы</button>
+            </div>
+            <div class="mod-active-bar" id="modActiveBarCard"></div>
             <div class="snake-top">
               <div class="snake-top-title">🏅 Топ очков</div>
               <div id="snakeLeaderboard"><div class="snake-top-empty">Рекордов пока нет</div></div>
@@ -631,6 +674,59 @@ a:hover { text-decoration: underline; }
   </div>
 </div>
 
+<!-- МОДИФИКАТОРЫ ЗМЕЙКИ -->
+<div class="mod-modal-overlay" id="modifiersModal">
+  <div class="mod-modal">
+    <div class="mod-modal-header">
+      <span class="mod-modal-title">⚙ Модификаторы Змейки</span>
+      <button class="mod-modal-close" onclick="closeModifiers()">×</button>
+    </div>
+    <div class="mod-modal-body">
+      <!-- Злой Двойник -->
+      <div class="mod-card" id="modEvilCard">
+        <div class="mod-card-row">
+          <div class="mod-icon">👿</div>
+          <div class="mod-card-content">
+            <div class="mod-card-title">
+              Злой Двойник
+              <span class="mod-badge">БУСТ +1 П-БАЛЛ</span>
+            </div>
+            <div class="mod-card-desc">Злая змейка гонится за тобой и растёт вместе с тобой — когда ты ешь яблоко, она тоже становится длиннее! Касание = смерть. Можно добавить до 2 двойников.</div>
+            <div class="mod-count-wrap">
+              <span class="mod-count-label">👿 Количество двойников:</span>
+              <button class="mod-count-btn" id="evilBtnMinus" onclick="changeEvilCount(-1)">−</button>
+              <span class="mod-count-display" id="evilCountVal">0</span>
+              <button class="mod-count-btn" id="evilBtnPlus" onclick="changeEvilCount(1)">+</button>
+            </div>
+          </div>
+          <div class="mod-check"><span class="mod-check-inner">✓</span></div>
+        </div>
+      </div>
+
+      <!-- Плохое Яблоко -->
+      <div class="mod-card" id="modBadAppleCard" onclick="toggleBadApple()" style="cursor:pointer">
+        <div class="mod-card-row">
+          <div class="mod-icon">🍎</div>
+          <div class="mod-card-content">
+            <div class="mod-card-title">
+              Плохое Яблоко
+              <span class="mod-badge">БУСТ +1 П-БАЛЛ</span>
+            </div>
+            <div class="mod-card-desc">Вместо одного яблока спавнятся два: <b style="color:#e74c3c">красное</b> (безопасное, ешь его!) и <b style="color:#7b0000">тёмно-красное</b> (мгновенная смерть!). Не ошибись.</div>
+          </div>
+          <div class="mod-check"><span class="mod-check-inner">✓</span></div>
+        </div>
+      </div>
+
+      <div style="font-size:11px;color:#9ca3af;text-align:center;padding:4px 0;">Активные модификаторы дают дополнительные П-Баллы при каждой награде!</div>
+    </div>
+    <div class="mod-modal-footer">
+      <button class="btn-start-with-mods" onclick="closeModifiersAndPlay()">▶ Играть с модификаторами</button>
+      <button class="btn-cancel" onclick="closeModifiers()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
 <!-- ЗМЕЙКА МОДАЛКА -->
 <div class="snake-modal-overlay" id="snakeModal">
   <div class="snake-modal">
@@ -644,6 +740,7 @@ a:hover { text-decoration: underline; }
       <div class="snake-stat snake-stat-coins">П-Баллы: <b id="snakePcoins">0</b></div>
       <div class="snake-stat" style="margin-left:auto;font-size:11px;color:#b8820a;">следующий балл: <b id="snakeNext">5</b> яблок</div>
     </div>
+    <div class="mod-active-bar" id="modActiveBarModal"></div>
     <div class="snake-reward-msg" id="snakeRewardMsg">+1 П-Балл заработан! 🏆</div>
     <div class="snake-canvas-wrap">
       <div class="snake-canvas-container">
@@ -1478,6 +1575,63 @@ function showGames() {
   renderSnakeLeaderboard();
 }
 
+// ===== МОДИФИКАТОРЫ =====
+let snakeMods = { evilCount: 0, badApple: false };
+
+function openModifiers() {
+  renderModUI();
+  document.getElementById('modifiersModal').classList.add('open');
+}
+function closeModifiers() {
+  document.getElementById('modifiersModal').classList.remove('open');
+}
+function closeModifiersAndPlay() {
+  closeModifiers();
+  openSnake();
+}
+function changeEvilCount(delta) {
+  snakeMods.evilCount = Math.max(0, Math.min(2, snakeMods.evilCount + delta));
+  renderModUI();
+}
+function toggleBadApple() {
+  snakeMods.badApple = !snakeMods.badApple;
+  renderModUI();
+}
+function renderModUI() {
+  // Evil card
+  document.getElementById('evilCountVal').textContent = snakeMods.evilCount;
+  document.getElementById('evilBtnMinus').disabled = snakeMods.evilCount === 0;
+  document.getElementById('evilBtnPlus').disabled = snakeMods.evilCount === 2;
+  document.getElementById('modEvilCard').classList.toggle('active', snakeMods.evilCount > 0);
+  // Bad apple card
+  document.getElementById('modBadAppleCard').classList.toggle('active', snakeMods.badApple);
+  // Update modifier button appearance
+  const hasAny = snakeMods.evilCount > 0 || snakeMods.badApple;
+  const btnMod = document.getElementById('btnModifiers');
+  if (btnMod) btnMod.classList.toggle('has-mods', hasAny);
+  // Update active bars
+  updateModActiveBars();
+}
+function getModTags() {
+  const tags = [];
+  if (snakeMods.evilCount === 1) tags.push('👿 Злой Двойник ×1');
+  if (snakeMods.evilCount === 2) tags.push('👿 Злой Двойник ×2');
+  if (snakeMods.badApple) tags.push('🍎 Плохое Яблоко');
+  return tags;
+}
+function updateModActiveBars() {
+  const tags = getModTags();
+  const html = tags.length
+    ? tags.map(t => `<span class="mod-active-tag">${t}</span>`).join('')
+    : '';
+  ['modActiveBarCard', 'modActiveBarModal'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (tags.length) { el.innerHTML = html; el.classList.add('show'); }
+    else { el.innerHTML = ''; el.classList.remove('show'); }
+  });
+}
+
 // ===== ЗМЕЙКА =====
 let snakeGame = null;
 
@@ -1486,6 +1640,7 @@ function openSnake() {
   document.getElementById('snakePcoins').textContent = pCoins;
   document.getElementById('snakeOverlay').style.display = 'flex';
   if (snakeGame) { snakeGame.stop(); snakeGame = null; }
+  updateModActiveBars();
   renderSnakeLeaderboard();
 }
 
@@ -1498,6 +1653,10 @@ function startSnake() {
   document.getElementById('snakeOverlay').style.display = 'none';
   document.getElementById('snakeRewardMsg').classList.remove('show');
   if (snakeGame) snakeGame.stop();
+
+  const activeMods = { evilCount: snakeMods.evilCount, badApple: snakeMods.badApple };
+  const bonusPerReward = activeMods.evilCount + (activeMods.badApple ? 1 : 0);
+
   snakeGame = window._snakeGame = new SnakeGame('snakeCanvas', {
     onScore: (score, apples) => {
       document.getElementById('snakeScore').textContent = score;
@@ -1506,34 +1665,41 @@ function startSnake() {
     },
     onReward: async () => {
       try {
-        const res = await api('POST', '/pcoins/earn', {});
-        pCoins = res.pcoins;
+        const calls = [];
+        for (let i = 0; i <= bonusPerReward; i++) calls.push(api('POST', '/pcoins/earn', {}));
+        const results = await Promise.all(calls);
+        pCoins = results[results.length - 1].pcoins;
         updatePCoins();
         document.getElementById('snakePcoins').textContent = pCoins;
         const msg = document.getElementById('snakeRewardMsg');
+        const total = 1 + bonusPerReward;
+        msg.textContent = total > 1 ? `+${total} П-Баллов заработано! 🏆` : '+1 П-Балл заработан! 🏆';
         msg.classList.add('show');
         setTimeout(() => msg.classList.remove('show'), 2500);
       } catch(e) { console.error('Ошибка начисления:', e); }
     },
     onGameOver: async (score, apples) => {
       await saveSnakeScore(score);
+      const modLine = getModTags().length ? `<p style="font-size:11px;color:rgba(255,255,255,0.7)">Модификаторы: ${getModTags().join(', ')}</p>` : '';
       const overlay = document.getElementById('snakeOverlay');
       overlay.innerHTML = `
         <h3>💀 Игра окончена!</h3>
         <p>Счёт: ${score} | Яблок: ${apples}</p>
+        ${modLine}
         <button class="btn-snake-start" onclick="startSnake()">Играть снова</button>
       `;
       overlay.style.display = 'flex';
     }
-  });
+  }, activeMods);
   snakeGame.start();
 }
 
 class SnakeGame {
-  constructor(canvasId, callbacks) {
+  constructor(canvasId, callbacks, mods) {
     this.canvas = document.getElementById(canvasId);
     this.ctx = this.canvas.getContext('2d');
     this.cb = callbacks;
+    this.mods = mods || { evilCount: 0, badApple: false };
     this.CELL = 20;
     this.COLS = this.canvas.width / this.CELL;
     this.ROWS = this.canvas.height / this.CELL;
@@ -1545,20 +1711,43 @@ class SnakeGame {
     this.snake = [{x:10,y:10},{x:9,y:10},{x:8,y:10}];
     this.dir = {x:1,y:0};
     this.nextDir = {x:1,y:0};
-    this.apple = this.randomApple();
     this.score = 0;
     this.apples = 0;
     this.applesForCoin = 5;
     this.speed = 150;
     this.running = false;
     this.interval = null;
+    // Яблоко
+    this.apple = this.rndPos([...this.snake]);
+    // Плохое яблоко
+    this.badApple = null;
+    if (this.mods.badApple) {
+      this.badApple = this.rndPos([...this.snake, this.apple]);
+    }
+    // Злые змейки
+    this.evilSnakes = [];
+    const spawnCorners = [
+      [{x:this.COLS-1,y:0},{x:this.COLS-2,y:0},{x:this.COLS-3,y:0}],
+      [{x:0,y:this.ROWS-1},{x:1,y:this.ROWS-1},{x:2,y:this.ROWS-1}],
+    ];
+    for (let i = 0; i < this.mods.evilCount; i++) {
+      this.evilSnakes.push({ body: spawnCorners[i].map(p=>({...p})), growNext: false });
+    }
   }
-  randomApple() {
+  rndPos(occupied) {
     let pos;
+    const occ = occupied || [];
     do {
       pos = {x: Math.floor(Math.random()*this.COLS), y: Math.floor(Math.random()*this.ROWS)};
-    } while (this.snake.some(s => s.x===pos.x && s.y===pos.y));
+    } while (occ.some(s => s.x===pos.x && s.y===pos.y));
     return pos;
+  }
+  allOccupied() {
+    const occ = [...this.snake];
+    this.evilSnakes.forEach(e => occ.push(...e.body));
+    if (this.apple) occ.push(this.apple);
+    if (this.badApple) occ.push(this.badApple);
+    return occ;
   }
   start() {
     this.running = true;
@@ -1582,23 +1771,57 @@ class SnakeGame {
       e.preventDefault();
     }
   }
+  moveEvil(evil) {
+    const target = this.snake[0];
+    const eHead = evil.body[0];
+    const dirs = [{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}];
+    let bestDir = null, bestDist = Infinity;
+    for (const d of dirs) {
+      if (evil.body.length > 1) {
+        const neck = evil.body[1];
+        if (eHead.x+d.x===neck.x && eHead.y+d.y===neck.y) continue;
+      }
+      const nx = eHead.x+d.x, ny = eHead.y+d.y;
+      if (nx<0||nx>=this.COLS||ny<0||ny>=this.ROWS) continue;
+      if (evil.body.some(s=>s.x===nx&&s.y===ny)) continue;
+      const dist = Math.abs(nx-target.x)+Math.abs(ny-target.y);
+      if (dist < bestDist) { bestDist = dist; bestDir = d; }
+    }
+    if (!bestDir) return;
+    const newHead = {x: eHead.x+bestDir.x, y: eHead.y+bestDir.y};
+    evil.body.unshift(newHead);
+    if (evil.growNext) { evil.growNext = false; }
+    else { evil.body.pop(); }
+  }
   tick() {
     if (!this.running) return;
     this.dir = this.nextDir;
     const head = {x: this.snake[0].x + this.dir.x, y: this.snake[0].y + this.dir.y};
     // Стена
-    if (head.x < 0 || head.x >= this.COLS || head.y < 0 || head.y >= this.ROWS) {
-      this.gameOver(); return;
-    }
+    if (head.x<0||head.x>=this.COLS||head.y<0||head.y>=this.ROWS) { this.gameOver(); return; }
     // Сама себя
-    if (this.snake.some(s => s.x===head.x && s.y===head.y)) {
-      this.gameOver(); return;
+    if (this.snake.some(s=>s.x===head.x&&s.y===head.y)) { this.gameOver(); return; }
+    // Злые змейки — касание тела
+    for (const evil of this.evilSnakes) {
+      if (evil.body.some(s=>s.x===head.x&&s.y===head.y)) { this.gameOver(); return; }
     }
     this.snake.unshift(head);
-    if (head.x === this.apple.x && head.y === this.apple.y) {
+    // Плохое яблоко — смерть
+    if (this.badApple && head.x===this.badApple.x && head.y===this.badApple.y) {
+      this.gameOver(); return;
+    }
+    // Обычное яблоко
+    if (head.x===this.apple.x && head.y===this.apple.y) {
       this.apples++;
       this.score += 10;
-      this.apple = this.randomApple();
+      // Злые змейки растут вместе с игроком
+      this.evilSnakes.forEach(e => e.growNext = true);
+      // Новое яблоко
+      this.apple = this.rndPos(this.allOccupied());
+      // Обновляем плохое яблоко
+      if (this.mods.badApple) {
+        this.badApple = this.rndPos(this.allOccupied());
+      }
       // Награда каждые 5 яблок
       if (this.apples % this.applesForCoin === 0) this.cb.onReward();
       // Ускорение
@@ -1610,6 +1833,8 @@ class SnakeGame {
     } else {
       this.snake.pop();
     }
+    // Двигаем злых змеек
+    this.evilSnakes.forEach(e => this.moveEvil(e));
     this.cb.onScore(this.score, this.apples);
     this.draw();
   }
@@ -1626,25 +1851,75 @@ class SnakeGame {
     // Сетка
     ctx.strokeStyle = 'rgba(74,118,168,0.1)';
     ctx.lineWidth = 0.5;
-    for (let x=0; x<this.COLS; x++) { ctx.beginPath(); ctx.moveTo(x*C,0); ctx.lineTo(x*C,this.canvas.height); ctx.stroke(); }
-    for (let y=0; y<this.ROWS; y++) { ctx.beginPath(); ctx.moveTo(0,y*C); ctx.lineTo(this.canvas.width,y*C); ctx.stroke(); }
-    // Яблоко
+    for (let x=0;x<this.COLS;x++){ctx.beginPath();ctx.moveTo(x*C,0);ctx.lineTo(x*C,this.canvas.height);ctx.stroke();}
+    for (let y=0;y<this.ROWS;y++){ctx.beginPath();ctx.moveTo(0,y*C);ctx.lineTo(this.canvas.width,y*C);ctx.stroke();}
+
+    // === ПЛОХОЕ ЯБЛОКО ===
+    if (this.badApple) {
+      const bx = this.badApple.x*C, by = this.badApple.y*C;
+      // Пульсация: зловещее свечение
+      ctx.save();
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = '#ff000066';
+      ctx.fillStyle = '#7b0000';
+      ctx.beginPath(); ctx.arc(bx+C/2, by+C/2, C/2-2, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#4a0000'; ctx.fillRect(bx+C/2-1, by+1, 3, 5);
+      ctx.restore();
+      // Крестик смерти
+      ctx.strokeStyle = 'rgba(255,80,80,0.8)';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(bx+5, by+6); ctx.lineTo(bx+C-5, by+C-4); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(bx+C-5, by+6); ctx.lineTo(bx+5, by+C-4); ctx.stroke();
+      ctx.lineWidth = 0.5; ctx.lineCap = 'butt';
+    }
+
+    // === ОБЫЧНОЕ ЯБЛОКО ===
     const ax = this.apple.x*C, ay = this.apple.y*C;
     ctx.fillStyle = '#e74c3c';
     ctx.beginPath(); ctx.arc(ax+C/2, ay+C/2, C/2-2, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = '#27ae60'; ctx.fillRect(ax+C/2-1, ay+1, 3, 5);
-    // Змейка
+
+    // === ЗЛЫЕ ЗМЕЙКИ ===
+    this.evilSnakes.forEach((evil, ei) => {
+      evil.body.forEach((seg, i) => {
+        const sx = seg.x*C, sy = seg.y*C;
+        const grad = ctx.createLinearGradient(sx, sy, sx+C, sy+C);
+        if (i === 0) { grad.addColorStop(0,'#ff5555'); grad.addColorStop(1,'#c0392b'); }
+        else         { grad.addColorStop(0,'#8b0000'); grad.addColorStop(1,'#550000'); }
+        ctx.fillStyle = grad;
+        ctx.fillRect(sx+1, sy+1, C-2, C-2);
+        if (i === 0) {
+          // Жёлтые злые глаза
+          ctx.fillStyle = '#ffdd00';
+          const evilDirX = evil.body.length>1 ? evil.body[0].x-evil.body[1].x : 1;
+          const evilDirY = evil.body.length>1 ? evil.body[0].y-evil.body[1].y : 0;
+          const eyeOff = evilDirX!==0
+            ? [{dx:C*0.65,dy:C*0.3},{dx:C*0.65,dy:C*0.65}]
+            : [{dx:C*0.3,dy:C*0.35},{dx:C*0.65,dy:C*0.35}];
+          eyeOff.forEach(e => { ctx.beginPath(); ctx.arc(sx+e.dx, sy+e.dy, 2.5, 0, Math.PI*2); ctx.fill(); });
+          // Злобная метка (× на голове)
+          ctx.fillStyle = 'rgba(255,200,0,0.7)';
+          ctx.font = 'bold 8px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText('👿', sx+C/2, sy+C/2+3);
+        }
+      });
+    });
+
+    // === ИГРОК (основная змейка) ===
     this.snake.forEach((seg, i) => {
       const sx = seg.x*C, sy = seg.y*C;
       const grad = ctx.createLinearGradient(sx, sy, sx+C, sy+C);
       if (i === 0) { grad.addColorStop(0,'#5eead4'); grad.addColorStop(1,'#0891b2'); }
-      else { grad.addColorStop(0,'#4a76a8'); grad.addColorStop(1,'#2a5885'); }
+      else         { grad.addColorStop(0,'#4a76a8'); grad.addColorStop(1,'#2a5885'); }
       ctx.fillStyle = grad;
       ctx.fillRect(sx+1, sy+1, C-2, C-2);
       if (i === 0) {
-        // Глаза
         ctx.fillStyle = '#fff';
-        const eyeOff = this.dir.x !== 0 ? [{dx:C*0.65,dy:C*0.3},{dx:C*0.65,dy:C*0.65}] : [{dx:C*0.3,dy:C*0.35},{dx:C*0.65,dy:C*0.35}];
+        const eyeOff = this.dir.x !== 0
+          ? [{dx:C*0.65,dy:C*0.3},{dx:C*0.65,dy:C*0.65}]
+          : [{dx:C*0.3,dy:C*0.35},{dx:C*0.65,dy:C*0.35}];
         eyeOff.forEach(e => { ctx.beginPath(); ctx.arc(sx+e.dx, sy+e.dy, 2, 0, Math.PI*2); ctx.fill(); });
       }
     });
