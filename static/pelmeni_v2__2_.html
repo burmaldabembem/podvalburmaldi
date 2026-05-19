@@ -438,6 +438,21 @@ a:hover { text-decoration: underline; }
 .anticontrol-flash { position: absolute; inset: 0; background: rgba(255,100,0,0.13); border-radius: 3px; pointer-events: none; opacity: 0; transition: opacity 0.4s; border: 2px solid rgba(255,120,0,0); }
 .anticontrol-flash.active { opacity: 1; border-color: rgba(255,120,0,0.6); animation: antiPulse 0.8s infinite; }
 @keyframes antiPulse { 0%,100%{border-color:rgba(255,120,0,0.3)} 50%{border-color:rgba(255,180,0,0.8)} }
+/* ===== ТРЕУГОЛЬНИК ЗЛА (СЕКРЕТНЫЙ МОД) ===== */
+.evil-triangle-flash { position: absolute; inset: 0; background: rgba(160,0,255,0.10); border-radius: 3px; pointer-events: none; opacity: 0; transition: opacity 0.3s; border: 2px solid rgba(180,0,255,0); }
+.evil-triangle-flash.planning { opacity: 1; border-color: rgba(180,0,255,0.7); animation: triPulsePlan 1s infinite; }
+.evil-triangle-flash.rushing { opacity: 1; background: rgba(255,0,0,0.13); border-color: rgba(255,60,60,0.8); animation: triPulseRush 0.3s infinite; }
+@keyframes triPulsePlan { 0%,100%{border-color:rgba(180,0,255,0.3)} 50%{border-color:rgba(220,80,255,0.9)} }
+@keyframes triPulseRush { 0%,100%{border-color:rgba(255,60,60,0.5)} 50%{border-color:rgba(255,0,0,1);background:rgba(255,0,0,0.18)} }
+/* ТОСТ — секретный мод разблокирован */
+.secret-toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px); background: linear-gradient(135deg, #2d0060, #7c00c8); color: #fff; border-radius: 10px; padding: 14px 22px; font-size: 13px; font-weight: 700; box-shadow: 0 6px 30px rgba(120,0,200,0.55); z-index: 9999; opacity: 0; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s; white-space: nowrap; pointer-events: none; }
+.secret-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+/* КАРТОЧКА СЕКРЕТНОГО МОДИФИКАТОРА */
+.mod-card.secret-locked { display: none; }
+.mod-card.secret-unlocked { display: block; border-color: #7c00c8; background: linear-gradient(135deg, #1a002e, #2d0060); }
+.mod-card.secret-unlocked .mod-card-title { color: #e0aaff; }
+.mod-card.secret-unlocked .mod-card-desc { color: #c084fc; }
+.mod-card.secret-unlocked.active { border-color: #d946ef; background: linear-gradient(135deg, #2d0060, #4a0080); box-shadow: 0 2px 20px rgba(217,70,239,0.4); }
 
 /* ТОП ОЧКОВ ЗМЕЙКИ */
 .snake-top { margin-top: 10px; border-top: 1px solid #edf0f4; padding-top: 8px; }
@@ -681,7 +696,7 @@ a:hover { text-decoration: underline; }
     <div class="header-inner">
       <div class="header-logo"><span>П</span>ельмени</div>
       <nav class="header-nav">
-        <a class="active" href="javascript:void(0)">лента</a>
+        <a class="active" href="javascript:void(0)" id="lentaNavBtn" onclick="onLentaSecretClick()">лента</a>
         <a class="header-logout" onclick="doLogout()">выйти</a>
       </nav>
       <div class="header-search-wrap">
@@ -1010,6 +1025,21 @@ a:hover { text-decoration: underline; }
       </div>
 
       <div style="font-size:11px;color:#9ca3af;text-align:center;padding:4px 0;">Активные модификаторы дают дополнительные П-Баллы при каждой награде!</div>
+
+      <!-- 🔺 ТРЕУГОЛЬНИК ЗЛА (СЕКРЕТНЫЙ) — скрыт до разблокировки -->
+      <div class="mod-card secret-locked" id="modEvilTriangleCard" onclick="toggleEvilTriangle()" style="cursor:pointer">
+        <div class="mod-card-row">
+          <div class="mod-icon">🔺</div>
+          <div class="mod-card-content">
+            <div class="mod-card-title" style="color:#e0aaff;">
+              Треугольник Зла
+              <span class="mod-badge" style="background:linear-gradient(90deg,#7c00c8,#d946ef);">⚠ СЕКРЕТНЫЙ МОД</span>
+            </div>
+            <div class="mod-card-desc" style="color:#c084fc;">Демонический треугольник появляется на карте. Каждые 5 секунд он строит маршрут к тебе — путь подсвечивается фиолетовым. Затем он <b style="color:#f0abfc">несётся по нему с бешеной скоростью</b>. Касание = мгновенная смерть. Цикл бесконечен.</div>
+          </div>
+          <div class="mod-check"><span class="mod-check-inner">✓</span></div>
+        </div>
+      </div>
     </div>
     <div class="mod-modal-footer">
       <button class="btn-start-with-mods" onclick="closeModifiersAndPlay()">▶ Играть с модификаторами</button>
@@ -1038,6 +1068,7 @@ a:hover { text-decoration: underline; }
         <canvas id="snakeCanvas" width="400" height="400"></canvas>
         <div class="evil-ate-flash" id="evilAteFlash"></div>
         <div class="anticontrol-flash" id="antiControlFlash"></div>
+        <div class="evil-triangle-flash" id="evilTriangleFlash"></div>
         <div class="snake-overlay-msg" id="snakeOverlay">
           <h3>🐍 Змейка</h3>
           <p>5 яблок = 1 П-Балл</p>
@@ -1869,7 +1900,23 @@ function showGames() {
 }
 
 // ===== МОДИФИКАТОРЫ =====
-let snakeMods = { evilCount: 0, badApple: false, evilGreed: false, antiControl: false, wallMod: false };
+let snakeMods = { evilCount: 0, badApple: false, evilGreed: false, antiControl: false, wallMod: false, evilTriangle: false };
+
+// ===== СЕКРЕТНЫЙ СЧЁТЧИК ЛЕНТЫ =====
+let _lentaClickCount = 0;
+let _triangleUnlocked = false;
+function onLentaSecretClick() {
+  if (!_triangleUnlocked) {
+    _lentaClickCount++;
+    if (_lentaClickCount >= 5) {
+      _triangleUnlocked = true;
+      document.getElementById('modEvilTriangleCard').className = 'mod-card secret-unlocked';
+      const toast = document.getElementById('secretToast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+  }
+}
 
 function openModifiers() {
   renderModUI();
@@ -1904,6 +1951,11 @@ function toggleWallMod() {
   snakeMods.wallMod = !snakeMods.wallMod;
   renderModUI();
 }
+function toggleEvilTriangle() {
+  if (!_triangleUnlocked) return;
+  snakeMods.evilTriangle = !snakeMods.evilTriangle;
+  renderModUI();
+}
 function renderModUI() {
   // Evil card
   document.getElementById('evilCountVal').textContent = snakeMods.evilCount;
@@ -1921,8 +1973,11 @@ function renderModUI() {
   document.getElementById('modAntiControlCard').classList.toggle('active', snakeMods.antiControl);
   // Wall mod card
   document.getElementById('modWallCard').classList.toggle('active', snakeMods.wallMod);
+  // Evil Triangle card
+  const triCard = document.getElementById('modEvilTriangleCard');
+  if (triCard) triCard.classList.toggle('active', snakeMods.evilTriangle);
   // Update modifier button appearance
-  const hasAny = snakeMods.evilCount > 0 || snakeMods.badApple || snakeMods.antiControl || snakeMods.wallMod;
+  const hasAny = snakeMods.evilCount > 0 || snakeMods.badApple || snakeMods.antiControl || snakeMods.wallMod || snakeMods.evilTriangle;
   const btnMod = document.getElementById('btnModifiers');
   if (btnMod) btnMod.classList.toggle('has-mods', hasAny);
   // Update active bars
@@ -1938,6 +1993,7 @@ function getModTags() {
   if (snakeMods.badApple) tags.push('🍎 Плохое Яблоко');
   if (snakeMods.antiControl) tags.push('🔄 Антиуправление');
   if (snakeMods.wallMod) tags.push('🧱 Стена');
+  if (snakeMods.evilTriangle) tags.push('🔺 Треугольник Зла');
   return tags;
 }
 function updateModActiveBars() {
@@ -1975,8 +2031,8 @@ function startSnake() {
   document.getElementById('snakeRewardMsg').classList.remove('show');
   if (snakeGame) snakeGame.stop();
 
-  const activeMods = { evilCount: snakeMods.evilCount, badApple: snakeMods.badApple, evilGreed: snakeMods.evilGreed, antiControl: snakeMods.antiControl, wallMod: snakeMods.wallMod };
-  const bonusPerReward = activeMods.evilCount + (activeMods.badApple ? 1 : 0) + (activeMods.antiControl ? 2 : 0) + (activeMods.wallMod ? 1 : 0);
+  const activeMods = { evilCount: snakeMods.evilCount, badApple: snakeMods.badApple, evilGreed: snakeMods.evilGreed, antiControl: snakeMods.antiControl, wallMod: snakeMods.wallMod, evilTriangle: snakeMods.evilTriangle };
+  const bonusPerReward = activeMods.evilCount + (activeMods.badApple ? 1 : 0) + (activeMods.antiControl ? 2 : 0) + (activeMods.wallMod ? 1 : 0) + (activeMods.evilTriangle ? 3 : 0);
 
   snakeGame = window._snakeGame = new SnakeGame('snakeCanvas', {
     onScore: (score, apples) => {
@@ -2061,6 +2117,19 @@ class SnakeGame {
     for (let i = 0; i < this.mods.evilCount; i++) {
       this.evilSnakes.push({ body: spawnCorners[i].map(p=>({...p})), growNext: false });
     }
+    // Треугольник Зла
+    this.triangle = null;
+    this._triTimer = null;
+    this._triRushTimer = null;
+    if (this.mods.evilTriangle) {
+      this.triangle = {
+        pos: { x: Math.floor(this.COLS/2), y: Math.floor(this.ROWS/2) },
+        phase: 'idle',      // 'idle' | 'planning' | 'rushing'
+        path: [],           // planned path cells
+        pathIdx: 0,         // current position in path while rushing
+        pulseT: 0,
+      };
+    }
   }
   rndPos(occupied) {
     let pos;
@@ -2082,15 +2151,20 @@ class SnakeGame {
     this.running = true;
     this.interval = setInterval(() => this.tick(), this.speed);
     if (this.mods.antiControl) this._scheduleAntiControl();
+    if (this.mods.evilTriangle && this.triangle) this._scheduleTrianglePlanning();
     this.draw();
   }
   stop() {
     this.running = false;
     if (this.interval) clearInterval(this.interval);
     if (this._antiTimer) clearTimeout(this._antiTimer);
+    if (this._triTimer) clearTimeout(this._triTimer);
+    if (this._triRushTimer) clearInterval(this._triRushTimer);
     this.invertControls = false;
     const flash = document.getElementById('antiControlFlash');
     if (flash) flash.classList.remove('active');
+    const triFlash = document.getElementById('evilTriangleFlash');
+    if (triFlash) triFlash.className = 'evil-triangle-flash';
     document.removeEventListener('keydown', this._keyHandler);
   }
   handleKey(e) {
@@ -2123,6 +2197,117 @@ class SnakeGame {
         this._scheduleAntiControl(); // планируем следующую
       }, holdMs);
     }, waitMs);
+  }
+
+  // ===== ТРЕУГОЛЬНИК ЗЛА =====
+  _scheduleTrianglePlanning() {
+    if (!this.running || !this.triangle) return;
+    this._triTimer = setTimeout(() => {
+      if (!this.running || !this.triangle) return;
+      this._trianglePlanPath();
+    }, 5000);
+  }
+  _triangleBFS(from, to) {
+    // BFS from triangle pos to target, returns array of cells [{x,y}]
+    const key = (x,y) => `${x},${y}`;
+    const blocked = new Set();
+    this.snake.forEach(s => blocked.add(key(s.x,s.y)));
+    this.wallCells.forEach(w => blocked.add(key(w.x,w.y)));
+    const visited = new Map();
+    visited.set(key(from.x,from.y), null);
+    const queue = [{x:from.x,y:from.y}];
+    const dirs = [{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}];
+    while (queue.length) {
+      const cur = queue.shift();
+      if (cur.x===to.x && cur.y===to.y) {
+        // Reconstruct path
+        const path = [];
+        let k = key(cur.x,cur.y);
+        while (visited.get(k)) {
+          path.unshift({x:parseInt(k),y:parseInt(k.split(',')[1])});
+          const pk = visited.get(k);
+          path[0] = {x:parseInt(pk.split(',')[0]),y:parseInt(pk.split(',')[1])};
+          k = pk;
+        }
+        // Rebuild properly
+        const path2 = [];
+        let ck = key(to.x,to.y);
+        while (ck && visited.has(ck)) {
+          path2.unshift({x:parseInt(ck.split(',')[0]),y:parseInt(ck.split(',')[1])});
+          const prev = visited.get(ck);
+          if (!prev) break;
+          ck = prev;
+        }
+        return path2;
+      }
+      for (const d of dirs) {
+        const nx=cur.x+d.x, ny=cur.y+d.y;
+        if (nx<0||nx>=this.COLS||ny<0||ny>=this.ROWS) continue;
+        const k2 = key(nx,ny);
+        if (visited.has(k2)) continue;
+        visited.set(k2, key(cur.x,cur.y));
+        queue.push({x:nx,y:ny});
+      }
+    }
+    // No path found — direct line as fallback
+    const path = [];
+    let cx=from.x, cy=from.y;
+    while (cx!==to.x||cy!==to.y) {
+      if (cx<to.x) cx++; else if (cx>to.x) cx--;
+      else if (cy<to.y) cy++; else cy--;
+      path.push({x:cx,y:cy});
+    }
+    return path;
+  }
+  _trianglePlanPath() {
+    if (!this.running || !this.triangle) return;
+    // Target: current snake head
+    const target = { x: this.snake[0].x, y: this.snake[0].y };
+    const path = this._triangleBFS(this.triangle.pos, target);
+    this.triangle.path = path;
+    this.triangle.pathIdx = 0;
+    this.triangle.phase = 'planning';
+    // Show path planning flash
+    const triFlash = document.getElementById('evilTriangleFlash');
+    if (triFlash) triFlash.className = 'evil-triangle-flash planning';
+    // After 5 seconds of showing — RUSH!
+    this._triTimer = setTimeout(() => {
+      if (!this.running || !this.triangle) return;
+      this._triangleStartRush();
+    }, 5000);
+  }
+  _triangleStartRush() {
+    if (!this.running || !this.triangle) return;
+    this.triangle.phase = 'rushing';
+    const triFlash = document.getElementById('evilTriangleFlash');
+    if (triFlash) triFlash.className = 'evil-triangle-flash rushing';
+    const RUSH_SPEED = 40; // ms per cell — бешеная скорость
+    this._triRushTimer = setInterval(() => {
+      if (!this.running || !this.triangle) { clearInterval(this._triRushTimer); return; }
+      const path = this.triangle.path;
+      if (this.triangle.pathIdx >= path.length) {
+        // Finished path — return to idle, schedule next planning
+        clearInterval(this._triRushTimer);
+        this.triangle.phase = 'idle';
+        const triFlash2 = document.getElementById('evilTriangleFlash');
+        if (triFlash2) triFlash2.className = 'evil-triangle-flash';
+        this._scheduleTrianglePlanning();
+        return;
+      }
+      const next = path[this.triangle.pathIdx];
+      this.triangle.pos = { x: next.x, y: next.y };
+      this.triangle.pathIdx++;
+      // Check collision with snake head
+      if (this.triangle.pos.x === this.snake[0].x && this.triangle.pos.y === this.snake[0].y) {
+        clearInterval(this._triRushTimer);
+        this.triangle.phase = 'idle';
+        const triFlash2 = document.getElementById('evilTriangleFlash');
+        if (triFlash2) triFlash2.className = 'evil-triangle-flash';
+        this.gameOver();
+        return;
+      }
+      this.draw();
+    }, RUSH_SPEED);
   }
   _spawnWall() {
     // Спавним стену из 3 блоков (горизонтально или вертикально) в рандомном месте
@@ -2250,6 +2435,10 @@ class SnakeGame {
     // Злые змейки — касание тела
     for (const evil of this.evilSnakes) {
       if (evil.body.some(s=>s.x===head.x&&s.y===head.y)) { this.gameOver(); return; }
+    }
+    // Треугольник Зла — касание во время рывка
+    if (this.triangle && (this.triangle.pos.x===head.x && this.triangle.pos.y===head.y)) {
+      this.gameOver(); return;
     }
     this.snake.unshift(head);
     // Плохое яблоко — смерть
@@ -2408,6 +2597,118 @@ class SnakeGame {
       ctx.fillRect(this.canvas.width/2 - tw/2, 6, tw, 20);
       ctx.fillStyle = '#ffaa00';
       ctx.fillText(txt, this.canvas.width/2, 10);
+      ctx.restore();
+    }
+
+    // === ТРЕУГОЛЬНИК ЗЛА ===
+    if (this.triangle) {
+      const tri = this.triangle;
+      const t = Date.now();
+
+      // Рисуем путь (во время фазы PLANNING и RUSHING)
+      if ((tri.phase === 'planning' || tri.phase === 'rushing') && tri.path.length > 0) {
+        tri.path.forEach((cell, idx) => {
+          const px = cell.x * C, py = cell.y * C;
+          const progress = idx / Math.max(1, tri.path.length - 1);
+          // Пульсирующий фиолетовый путь
+          const alpha = 0.18 + 0.25 * Math.sin(t * 0.006 + idx * 0.4);
+          if (tri.phase === 'planning') {
+            ctx.fillStyle = `rgba(200,50,255,${alpha})`;
+          } else {
+            // Во время рывка путь позади — красный, впереди — более слабый
+            const ahead = idx >= tri.pathIdx;
+            ctx.fillStyle = ahead
+              ? `rgba(255,40,40,${alpha})`
+              : `rgba(120,0,120,${alpha * 0.4})`;
+          }
+          ctx.fillRect(px + 2, py + 2, C - 4, C - 4);
+          // Пунктирные точки на пути
+          if (tri.phase === 'planning') {
+            const dotAlpha = 0.5 + 0.4 * Math.sin(t * 0.008 + idx * 0.5);
+            ctx.fillStyle = `rgba(230,100,255,${dotAlpha})`;
+            ctx.beginPath();
+            ctx.arc(px + C/2, py + C/2, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        });
+
+        // Метка "СТРОИТ ПУТЬ" при планировании
+        if (tri.phase === 'planning') {
+          ctx.save();
+          ctx.font = 'bold 11px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          const label = '🔺 СТРОИТ МАРШРУТ...';
+          const lw = ctx.measureText(label).width + 16;
+          ctx.fillStyle = 'rgba(0,0,0,0.65)';
+          ctx.fillRect(this.canvas.width/2 - lw/2, this.canvas.height - 28, lw, 20);
+          ctx.fillStyle = '#e879f9';
+          ctx.fillText(label, this.canvas.width/2, this.canvas.height - 10);
+          ctx.restore();
+        }
+        if (tri.phase === 'rushing') {
+          ctx.save();
+          ctx.font = 'bold 12px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          const label = '🔺 РЫВОК!';
+          const lw = ctx.measureText(label).width + 16;
+          ctx.fillStyle = 'rgba(0,0,0,0.7)';
+          ctx.fillRect(this.canvas.width/2 - lw/2, this.canvas.height - 28, lw, 20);
+          ctx.fillStyle = '#ff4444';
+          ctx.fillText(label, this.canvas.width/2, this.canvas.height - 10);
+          ctx.restore();
+        }
+      }
+
+      // Рисуем сам треугольник
+      const tx2 = tri.pos.x * C + C/2;
+      const ty2 = tri.pos.y * C + C/2;
+      const size = C/2 - 1;
+      const pulse = 0.8 + 0.2 * Math.sin(t * 0.005);
+
+      ctx.save();
+      // Свечение
+      ctx.shadowBlur = tri.phase === 'rushing' ? 22 : 12;
+      ctx.shadowColor = tri.phase === 'rushing' ? '#ff0040' : '#cc00ff';
+
+      // Тело треугольника
+      ctx.beginPath();
+      ctx.moveTo(tx2, ty2 - size * pulse);
+      ctx.lineTo(tx2 - size * pulse * 0.87, ty2 + size * pulse * 0.5);
+      ctx.lineTo(tx2 + size * pulse * 0.87, ty2 + size * pulse * 0.5);
+      ctx.closePath();
+
+      const triGrad = ctx.createRadialGradient(tx2, ty2, 0, tx2, ty2, size);
+      if (tri.phase === 'rushing') {
+        triGrad.addColorStop(0, '#ff2020');
+        triGrad.addColorStop(1, '#880000');
+      } else if (tri.phase === 'planning') {
+        triGrad.addColorStop(0, '#ff00ff');
+        triGrad.addColorStop(1, '#6600cc');
+      } else {
+        triGrad.addColorStop(0, '#cc44ff');
+        triGrad.addColorStop(1, '#440088');
+      }
+      ctx.fillStyle = triGrad;
+      ctx.fill();
+
+      // Контур
+      ctx.strokeStyle = tri.phase === 'rushing' ? '#ffaaaa' : '#ee88ff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.restore();
+
+      // Глаз в центре
+      ctx.save();
+      ctx.fillStyle = tri.phase === 'rushing' ? '#ffff00' : '#ffffff';
+      ctx.beginPath();
+      ctx.arc(tx2, ty2 + size * 0.1 * pulse, size * 0.22, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.arc(tx2, ty2 + size * 0.1 * pulse, size * 0.12, 0, Math.PI * 2);
+      ctx.fill();
       ctx.restore();
     }
   }
@@ -3139,5 +3440,8 @@ class MinesweeperGame {
   } catch(e) {}
 })();
 </script>
+<!-- СЕКРЕТНЫЙ ТОСТ -->
+<div class="secret-toast" id="secretToast">🔺 Секретный модификатор разблокирован!</div>
+
 </body>
 </html>
